@@ -23,7 +23,7 @@ Response:
   "dataset_timestamp": "demo"
 }
 
-## POST /risk
+POST /risk
 Request:
 {
   "launch_site": {"name":"Cape Canaveral","lat":28.396837,"lon":-80.605659},
