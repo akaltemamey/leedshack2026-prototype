@@ -1,13 +1,14 @@
 "use client"
 
-import { useRef, useMemo, useState, useCallback } from "react"
+import React, { useRef, useMemo, useState, useCallback, useLayoutEffect } from "react"
 import { Canvas, useFrame, type ThreeEvent, useLoader } from "@react-three/fiber"
 import { OrbitControls, Html, Stars } from "@react-three/drei"
 import * as THREE from "three"
-import type { Hotspot } from "@/lib/types"
-import type { SatellitePosition } from "@/lib/orbital"
+import type { Hotspot } from "@/lib/types" 
+import type { SatellitePosition } from "@/lib/orbital" 
 
-// Convert lat/lon to 3D position on sphere
+// --- 1. UTILITIES ---
+
 function latLonToVector3(lat: number, lon: number, radius: number): THREE.Vector3 {
   const phi = (90 - lat) * (Math.PI / 180)
   const theta = (lon + 180) * (Math.PI / 180)
@@ -17,81 +18,55 @@ function latLonToVector3(lat: number, lon: number, radius: number): THREE.Vector
   return new THREE.Vector3(x, y, z)
 }
 
-// Procedural Earth (no external texture needed)
+// --- 2. EARTH COMPONENTS ---
+
 function Earth() {
-  const wireRef = useRef<THREE.LineSegments>(null)
-  const glowRef = useRef<THREE.Mesh>(null)
-
-  // Create a wireframe globe with latitude/longitude lines
-  const wireGeometry = useMemo(() => {
-    const geo = new THREE.SphereGeometry(2, 36, 18)
-    return new THREE.WireframeGeometry(geo)
-  }, [])
-
-  useFrame((state) => {
-    if (glowRef.current) {
-      const mat = glowRef.current.material as THREE.MeshBasicMaterial
-      mat.opacity = 0.06 + Math.sin(state.clock.elapsedTime * 0.5) * 0.02
-    }
-  })
+  // Load texture. Fallback to blue color if texture fails or loads slowly.
+  const [colorMap] = useLoader(THREE.TextureLoader, [
+    "https://unpkg.com/three-globe/example/img/earth-blue-marble.jpg",
+  ])
 
   return (
     <group>
-      {/* Solid dark sphere base */}
-      <mesh>
-        <sphereGeometry args={[1.99, 64, 64]} />
-        <meshStandardMaterial color="#0c1a2e" roughness={0.9} />
-      </mesh>
-      {/* Wireframe grid */}
-      <lineSegments ref={wireRef} geometry={wireGeometry}>
-        <lineBasicMaterial color="#1e3a5f" transparent opacity={0.35} />
-      </lineSegments>
-      {/* Subtle inner glow */}
-      <mesh ref={glowRef}>
-        <sphereGeometry args={[2.01, 64, 64]} />
-        <meshBasicMaterial color="#38bdf8" transparent opacity={0.06} />
+      <mesh rotation={[0, 0, 0]}>
+        <sphereGeometry args={[2, 64, 64]} />
+        <meshStandardMaterial
+          map={colorMap}
+          color="#ffffff" // Base color if map fails
+          metalness={0.1}
+          roughness={0.7}
+        />
       </mesh>
     </group>
   )
 }
 
-// Atmosphere glow
 function Atmosphere() {
   return (
     <mesh>
       <sphereGeometry args={[2.05, 64, 64]} />
-      <meshBasicMaterial color="#38bdf8" transparent opacity={0.08} side={THREE.BackSide} />
+      <meshBasicMaterial 
+        color="#3b82f6" 
+        transparent 
+        opacity={0.12} 
+        side={THREE.BackSide} 
+        blending={THREE.AdditiveBlending}
+      />
     </mesh>
   )
 }
 
-// Launch site marker
-function LaunchSiteMarker({
-  lat,
-  lon,
-  name,
-  isActive,
-}: {
-  lat: number
-  lon: number
-  name: string
-  isActive: boolean
-}) {
+// --- 3. MARKERS & PATHS ---
+
+function LaunchSiteMarker({ lat, lon, name, isActive }: { lat: number; lon: number; name: string; isActive: boolean }) {
   const position = useMemo(() => latLonToVector3(lat, lon, 2.02), [lat, lon])
   const [hovered, setHovered] = useState(false)
 
   return (
     <group position={position}>
-      <mesh
-        onPointerOver={() => setHovered(true)}
-        onPointerOut={() => setHovered(false)}
-      >
+      <mesh onPointerOver={() => setHovered(true)} onPointerOut={() => setHovered(false)}>
         <sphereGeometry args={[isActive ? 0.04 : 0.025, 16, 16]} />
-        <meshBasicMaterial
-          color={isActive ? "#22d3ee" : "#94a3b8"}
-          transparent
-          opacity={isActive ? 1 : 0.6}
-        />
+        <meshBasicMaterial color={isActive ? "#22d3ee" : "#94a3b8"} transparent opacity={isActive ? 1 : 0.8} />
       </mesh>
       {isActive && (
         <mesh>
@@ -101,7 +76,7 @@ function LaunchSiteMarker({
       )}
       {hovered && (
         <Html distanceFactor={6} style={{ pointerEvents: "none" }}>
-          <div className="rounded-md bg-card/95 px-2 py-1 text-xs font-sans text-card-foreground shadow-lg border border-border whitespace-nowrap backdrop-blur-sm">
+          <div className="rounded-md bg-black/90 px-2 py-1 text-xs font-sans text-white shadow-lg border border-white/20 whitespace-nowrap backdrop-blur-sm">
             {name}
           </div>
         </Html>
@@ -110,46 +85,20 @@ function LaunchSiteMarker({
   )
 }
 
-// Corridor path line
-function CorridorPath({
-  path,
-  visible,
-  color = "#22d3ee",
-}: {
-  path: { lat: number; lon: number }[]
-  visible: boolean
-  color?: string
-}) {
-  const points = useMemo(() => {
-    return path.map((p) => latLonToVector3(p.lat, p.lon, 2.03))
-  }, [path])
-
-  const geometry = useMemo(() => {
-    const geo = new THREE.BufferGeometry().setFromPoints(points)
-    return geo
-  }, [points])
+function CorridorPath({ path, visible, color = "#22d3ee" }: { path: { lat: number; lon: number }[]; visible: boolean; color?: string }) {
+  const points = useMemo(() => path.map((p) => latLonToVector3(p.lat, p.lon, 2.03)), [path])
+  const geometry = useMemo(() => new THREE.BufferGeometry().setFromPoints(points), [points])
 
   if (!visible || points.length === 0) return null
 
   return (
     <line geometry={geometry}>
-      <lineBasicMaterial color={color} linewidth={2} transparent opacity={0.9} />
+      <lineBasicMaterial color={color} linewidth={2} transparent opacity={0.8} />
     </line>
   )
 }
 
-// Corridor buffer (translucent tube)
-function CorridorBuffer({
-  path,
-  width,
-  visible,
-  color = "#22d3ee",
-}: {
-  path: { lat: number; lon: number }[]
-  width: number
-  visible: boolean
-  color?: string
-}) {
+function CorridorBuffer({ path, width, visible, color = "#22d3ee" }: { path: { lat: number; lon: number }[]; width: number; visible: boolean; color?: string }) {
   const tubeGeometry = useMemo(() => {
     if (path.length < 2) return null
     const points = path.map((p) => latLonToVector3(p.lat, p.lon, 2.03))
@@ -162,43 +111,27 @@ function CorridorBuffer({
 
   return (
     <mesh geometry={tubeGeometry}>
-      <meshBasicMaterial color={color} transparent opacity={0.25} side={THREE.DoubleSide} />
+      <meshBasicMaterial color={color} transparent opacity={0.15} side={THREE.DoubleSide} depthWrite={false} />
     </mesh>
   )
 }
 
-// Hotspot markers
-function HotspotMarker({
-  hotspot,
-  visible,
-  onHover,
-}: {
-  hotspot: Hotspot
-  visible: boolean
-  onHover: (h: Hotspot | null) => void
-}) {
-  const position = useMemo(
-    () => latLonToVector3(hotspot.lat, hotspot.lon, 2.05),
-    [hotspot.lat, hotspot.lon]
-  )
+function HotspotMarker({ hotspot, visible, onHover }: { hotspot: Hotspot; visible: boolean; onHover: (h: Hotspot | null) => void }) {
+  const position = useMemo(() => latLonToVector3(hotspot.lat, hotspot.lon, 2.05), [hotspot.lat, hotspot.lon])
   const [hovered, setHovered] = useState(false)
   const pulseRef = useRef<THREE.Mesh>(null)
 
   useFrame((state) => {
     if (pulseRef.current) {
-      const scale = 1 + Math.sin(state.clock.elapsedTime * 3) * 0.3
-      pulseRef.current.scale.setScalar(scale)
+      pulseRef.current.scale.setScalar(1 + Math.sin(state.clock.elapsedTime * 3) * 0.3)
     }
   })
 
-  const handlePointerOver = useCallback(
-    (e: ThreeEvent<PointerEvent>) => {
+  const handlePointerOver = useCallback((e: ThreeEvent<PointerEvent>) => {
       e.stopPropagation()
       setHovered(true)
       onHover(hotspot)
-    },
-    [hotspot, onHover]
-  )
+    }, [hotspot, onHover])
 
   const handlePointerOut = useCallback(() => {
     setHovered(false)
@@ -208,8 +141,7 @@ function HotspotMarker({
   if (!visible) return null
 
   const size = 0.02 + hotspot.weight * 0.03
-  const riskColor =
-    hotspot.weight > 0.7 ? "#ef4444" : hotspot.weight > 0.4 ? "#f59e0b" : "#22c55e"
+  const riskColor = hotspot.weight > 0.7 ? "#ef4444" : hotspot.weight > 0.4 ? "#f59e0b" : "#22c55e"
 
   return (
     <group position={position}>
@@ -223,11 +155,9 @@ function HotspotMarker({
       </mesh>
       {hovered && (
         <Html distanceFactor={6} style={{ pointerEvents: "none" }}>
-          <div className="rounded-md bg-card/95 px-3 py-2 text-xs font-sans text-card-foreground shadow-lg border border-border whitespace-nowrap backdrop-blur-sm">
+          <div className="rounded-md bg-black/90 px-3 py-2 text-xs font-sans text-white shadow-lg border border-white/20 whitespace-nowrap backdrop-blur-sm">
             <div className="font-medium">{hotspot.label}</div>
-            <div className="text-muted-foreground">
-              Alt: {hotspot.altitudeBand} | Risk: {(hotspot.weight * 100).toFixed(0)}%
-            </div>
+            <div className="text-gray-300">Alt: {hotspot.altitudeBand} | Risk: {(hotspot.weight * 100).toFixed(0)}%</div>
           </div>
         </Html>
       )}
@@ -235,112 +165,92 @@ function HotspotMarker({
   )
 }
 
-// Satellite/debris instanced point cloud
+// --- 4. SATELLITE LAYER (FIXED) ---
+
 const SAT_COLORS: Record<string, string> = {
-  active: "#3b82f6",
-  debris: "#ef4444",
-  station: "#ffffff",
-  recent: "#22c55e",
+  active: "#3b82f6", // Blue
+  debris: "#ef4444", // Red
+  station: "#ffffff", // White
+  recent: "#22c55e", // Green
 }
 
-function SatelliteLayer({
-  satellites,
-  visible,
-}: {
-  satellites: SatellitePosition[]
-  visible: boolean
-}) {
+function SatelliteLayer({ satellites }: { satellites: SatellitePosition[] }) {
   const meshRef = useRef<THREE.InstancedMesh>(null)
   const [hoveredIdx, setHoveredIdx] = useState<number | null>(null)
 
-  // Group satellites by type and build instance matrices + colors
-  const { matrices, colors, count } = useMemo(() => {
-    if (!visible || !satellites || satellites.length === 0) {
-      return { matrices: new Float32Array(0), colors: new Float32Array(0), count: 0 }
-    }
+  // Use LayoutEffect to ensure matrices are updated BEFORE the next paint
+  useLayoutEffect(() => {
+    if (!meshRef.current || !satellites || satellites.length === 0) return
 
-    const cnt = satellites.length
-    const mat = new Float32Array(cnt * 16)
-    const col = new Float32Array(cnt * 3)
-    const dummy = new THREE.Matrix4()
+    const tempObject = new THREE.Object3D()
     const color = new THREE.Color()
 
-    for (let i = 0; i < cnt; i++) {
+    for (let i = 0; i < satellites.length; i++) {
       const sat = satellites[i]
-      // Place on sphere at slightly higher radius based on normalized altitude
+      
+      // Calculate Position
       const normAlt = Math.min(sat.altitudeKm / 2000, 1)
-      const radius = 2.08 + normAlt * 0.3
+      const radius = 2.1 + normAlt * 0.4 // Lifted off surface
       const pos = latLonToVector3(sat.lat, sat.lon, radius)
+      
+      tempObject.position.copy(pos)
+      
+      // Calculate Scale (make them visible)
+      const scale = sat.type === "station" ? 0.04 : sat.type === "debris" ? 0.015 : 0.02
+      tempObject.scale.setScalar(scale)
+      
+      tempObject.updateMatrix()
+      meshRef.current.setMatrixAt(i, tempObject.matrix)
 
-      const size = sat.type === "station" ? 0.025 : sat.type === "debris" ? 0.012 : 0.015
-      dummy.makeScale(size, size, size)
-      dummy.setPosition(pos)
-      dummy.toArray(mat, i * 16)
-
+      // Calculate Color
       color.set(SAT_COLORS[sat.type] || "#3b82f6")
-      col[i * 3] = color.r
-      col[i * 3 + 1] = color.g
-      col[i * 3 + 2] = color.b
-    }
-    return { matrices: mat, colors: col, count: cnt }
-  }, [satellites, visible])
-
-  // Apply instance data
-  useFrame(() => {
-    if (!meshRef.current || count === 0) return
-    const dummy = new THREE.Matrix4()
-    for (let i = 0; i < count; i++) {
-      dummy.fromArray(matrices, i * 16)
-      meshRef.current.setMatrixAt(i, dummy)
-
-      const color = new THREE.Color(colors[i * 3], colors[i * 3 + 1], colors[i * 3 + 2])
       meshRef.current.setColorAt(i, color)
     }
+
     meshRef.current.instanceMatrix.needsUpdate = true
     if (meshRef.current.instanceColor) meshRef.current.instanceColor.needsUpdate = true
-  })
+
+  }, [satellites])
 
   const satLength = satellites?.length ?? 0
 
-  const handlePointerMove = useCallback(
-    (e: ThreeEvent<PointerEvent>) => {
-      e.stopPropagation()
-      if (e.instanceId !== undefined && e.instanceId < satLength) {
-        setHoveredIdx(e.instanceId)
-      }
-    },
-    [satLength]
-  )
+  const handlePointerMove = useCallback((e: ThreeEvent<PointerEvent>) => {
+    e.stopPropagation()
+    if (e.instanceId !== undefined && e.instanceId < satLength) {
+      setHoveredIdx(e.instanceId)
+    }
+  }, [satLength])
 
   const handlePointerOut = useCallback(() => {
     setHoveredIdx(null)
   }, [])
 
-  if (!visible || count === 0) return null
-
+  if (!satellites || satellites.length === 0) return null
   const hoveredSat = hoveredIdx !== null ? satellites[hoveredIdx] : null
 
   return (
     <group>
       <instancedMesh
         ref={meshRef}
-        args={[undefined, undefined, count]}
+        args={[undefined, undefined, satellites.length]}
         onPointerMove={handlePointerMove}
         onPointerOut={handlePointerOut}
       >
         <sphereGeometry args={[1, 6, 6]} />
         <meshBasicMaterial toneMapped={false} />
       </instancedMesh>
+      
+      {/* Tooltip */}
       {hoveredSat && (
-        <group position={latLonToVector3(hoveredSat.lat, hoveredSat.lon, 2.1 + Math.min(hoveredSat.altitudeKm / 2000, 1) * 0.3)}>
+        <group position={latLonToVector3(hoveredSat.lat, hoveredSat.lon, 2.15 + Math.min(hoveredSat.altitudeKm / 2000, 1) * 0.4)}>
           <Html distanceFactor={6} style={{ pointerEvents: "none" }}>
-            <div className="rounded-md bg-card/95 px-3 py-2 text-xs font-sans text-card-foreground shadow-lg border border-border whitespace-nowrap backdrop-blur-sm">
-              <div className="font-medium">{hoveredSat.name}</div>
-              <div className="text-muted-foreground flex gap-2">
+            <div className="rounded-md bg-black/90 px-3 py-2 text-xs font-sans text-white shadow-lg border border-white/20 whitespace-nowrap backdrop-blur-sm z-50">
+              <div className="font-medium text-blue-300">{hoveredSat.name}</div>
+              <div className="text-gray-300 flex gap-2">
                 <span>NORAD {hoveredSat.noradId}</span>
                 <span>Alt: {Math.round(hoveredSat.altitudeKm)} km</span>
               </div>
-              <div className="text-muted-foreground capitalize">{hoveredSat.type}</div>
+              <div className="text-gray-400 capitalize">{hoveredSat.type}</div>
             </div>
           </Html>
         </group>
@@ -349,7 +259,8 @@ function SatelliteLayer({
   )
 }
 
-// Main scene content
+// --- 5. MAIN SCENE ---
+
 function GlobeScene({
   launchSite,
   corridorPath,
@@ -357,7 +268,6 @@ function GlobeScene({
   hotspots,
   showCorridor,
   showHotspots,
-  showSatellites,
   satellites,
   compareCorridorPath,
   onHotspotHover,
@@ -368,21 +278,22 @@ function GlobeScene({
   hotspots: Hotspot[]
   showCorridor: boolean
   showHotspots: boolean
-  showSatellites: boolean
   satellites: SatellitePosition[]
   compareCorridorPath?: { lat: number; lon: number }[]
   onHotspotHover: (h: Hotspot | null) => void
 }) {
   return (
     <>
-      <ambientLight intensity={0.6} />
-      <directionalLight position={[5, 3, 5]} intensity={1.2} />
-      <Stars radius={100} depth={50} count={2000} factor={4} saturation={0} fade speed={1} />
+      <ambientLight intensity={0.4} />
+      <directionalLight position={[10, 5, 5]} intensity={2} />
+      <Stars radius={100} depth={50} count={3000} factor={4} saturation={0} fade speed={1} />
 
+      {/* Textured Earth */}
       <Earth />
       <Atmosphere />
 
-      <SatelliteLayer satellites={satellites} visible={showSatellites} />
+      {/* Satellites - Always Visible */}
+      <SatelliteLayer satellites={satellites} />
 
       {launchSite && (
         <LaunchSiteMarker
@@ -415,13 +326,15 @@ function GlobeScene({
       <OrbitControls
         enablePan={false}
         minDistance={3}
-        maxDistance={8}
+        maxDistance={9}
         enableDamping
         dampingFactor={0.05}
       />
     </>
   )
 }
+
+// --- 6. EXPORTED COMPONENT ---
 
 interface GlobeVisualizationProps {
   launchSite: { lat: number; lon: number; name: string } | null
@@ -442,31 +355,32 @@ export default function GlobeVisualization({
   hotspots,
   showCorridor,
   showHotspots,
-  showSatellites,
+  showSatellites, // Ignored: Satellites are always shown now
   satellites,
   compareCorridorPath,
 }: GlobeVisualizationProps) {
   const [, setHoveredHotspot] = useState<Hotspot | null>(null)
 
   return (
-    <div className="w-full h-full relative">
+    <div className="w-full h-full relative bg-slate-950">
       <Canvas
-        camera={{ position: [0, 0, 5], fov: 45 }}
+        camera={{ position: [0, 0, 6], fov: 40 }}
         gl={{ antialias: true, alpha: true }}
         style={{ background: "transparent" }}
       >
-        <GlobeScene
-          launchSite={launchSite}
-          corridorPath={corridorPath}
-          corridorWidth={corridorWidth}
-          hotspots={hotspots}
-          showCorridor={showCorridor}
-          showHotspots={showHotspots}
-          showSatellites={showSatellites}
-          satellites={satellites}
-          compareCorridorPath={compareCorridorPath}
-          onHotspotHover={setHoveredHotspot}
-        />
+        <React.Suspense fallback={null}>
+            <GlobeScene
+            launchSite={launchSite}
+            corridorPath={corridorPath}
+            corridorWidth={corridorWidth}
+            hotspots={hotspots}
+            showCorridor={showCorridor}
+            showHotspots={showHotspots}
+            satellites={satellites}
+            compareCorridorPath={compareCorridorPath}
+            onHotspotHover={setHoveredHotspot}
+            />
+        </React.Suspense>
       </Canvas>
     </div>
   )

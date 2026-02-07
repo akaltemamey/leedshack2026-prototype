@@ -1,0 +1,56 @@
+node_modules
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Testing
+coverage/
+
+# Production build outputs
+dist/
+build/
+
+# Misc
+.DS_Store
+*.pem
+
+# Debug logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Environment Variables (CRITICAL: Do not commit secrets)
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# TypeScript
+*.tsbuildinfo
+
+# Editors / IDEs
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Vercel
+.vercel
+
+# Next.js (If you are using Next.js)
+.next/
+out/
+next-env.d.ts
+
+# Vite (If you are using Vite)
+*.local
+
+# ESLint
+.eslintcache
+
+# Stylelint
+.stylelintcache
