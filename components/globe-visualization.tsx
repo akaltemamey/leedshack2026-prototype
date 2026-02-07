@@ -4,10 +4,11 @@ import { Suspense, useRef, useMemo, useState, useCallback } from "react"
 import { Canvas, useFrame, type ThreeEvent, useLoader } from "@react-three/fiber"
 import { OrbitControls, Html, Stars } from "@react-three/drei"
 import * as THREE from "three"
-import type { Hotspot } from "@/lib/types"
-import type { SatellitePosition } from "@/lib/orbital"
+import type { Hotspot } from "@/lib/types" 
+import type { SatellitePosition } from "@/lib/orbital" 
 
-// Convert lat/lon to 3D position on sphere
+// --- 1. UTILITIES ---
+
 function latLonToVector3(lat: number, lon: number, radius: number): THREE.Vector3 {
   const phi = (90 - lat) * (Math.PI / 180)
   const theta = (lon + 180) * (Math.PI / 180)
@@ -111,18 +112,9 @@ function Atmosphere() {
   )
 }
 
-// Launch site marker
-function LaunchSiteMarker({
-  lat,
-  lon,
-  name,
-  isActive,
-}: {
-  lat: number
-  lon: number
-  name: string
-  isActive: boolean
-}) {
+// --- 3. MARKERS & PATHS ---
+
+function LaunchSiteMarker({ lat, lon, name, isActive }: { lat: number; lon: number; name: string; isActive: boolean }) {
   const position = useMemo(() => latLonToVector3(lat, lon, 2.02), [lat, lon])
   const [hovered, setHovered] = useState(false)
 
@@ -140,7 +132,7 @@ function LaunchSiteMarker({
       )}
       {hovered && (
         <Html distanceFactor={6} style={{ pointerEvents: "none" }}>
-          <div className="rounded-md bg-card/95 px-2 py-1 text-xs font-sans text-card-foreground shadow-lg border border-border whitespace-nowrap backdrop-blur-sm">
+          <div className="rounded-md bg-black/90 px-2 py-1 text-xs font-sans text-white shadow-lg border border-white/20 whitespace-nowrap backdrop-blur-sm">
             {name}
           </div>
         </Html>
@@ -166,7 +158,7 @@ function CorridorPath({
 
   return (
     <line geometry={geometry}>
-      <lineBasicMaterial color={color} linewidth={2} transparent opacity={0.9} />
+      <lineBasicMaterial color={color} linewidth={2} transparent opacity={0.8} />
     </line>
   )
 }
@@ -262,19 +254,15 @@ function HotspotMarker({
 
   useFrame((state) => {
     if (pulseRef.current) {
-      const scale = 1 + Math.sin(state.clock.elapsedTime * 3) * 0.3
-      pulseRef.current.scale.setScalar(scale)
+      pulseRef.current.scale.setScalar(1 + Math.sin(state.clock.elapsedTime * 3) * 0.3)
     }
   })
 
-  const handlePointerOver = useCallback(
-    (e: ThreeEvent<PointerEvent>) => {
+  const handlePointerOver = useCallback((e: ThreeEvent<PointerEvent>) => {
       e.stopPropagation()
       setHovered(true)
       onHover(hotspot)
-    },
-    [hotspot, onHover]
-  )
+    }, [hotspot, onHover])
 
   const handlePointerOut = useCallback(() => {
     setHovered(false)
@@ -298,11 +286,9 @@ function HotspotMarker({
       </mesh>
       {hovered && (
         <Html distanceFactor={6} style={{ pointerEvents: "none" }}>
-          <div className="rounded-md bg-card/95 px-3 py-2 text-xs font-sans text-card-foreground shadow-lg border border-border whitespace-nowrap backdrop-blur-sm">
+          <div className="rounded-md bg-black/90 px-3 py-2 text-xs font-sans text-white shadow-lg border border-white/20 whitespace-nowrap backdrop-blur-sm">
             <div className="font-medium">{hotspot.label}</div>
-            <div className="text-muted-foreground">
-              Alt: {hotspot.altitudeBand} | Risk: {(hotspot.weight * 100).toFixed(0)}%
-            </div>
+            <div className="text-gray-300">Alt: {hotspot.altitudeBand} | Risk: {(hotspot.weight * 100).toFixed(0)}%</div>
           </div>
         </Html>
       )}
@@ -310,12 +296,13 @@ function HotspotMarker({
   )
 }
 
-// Satellite/debris instanced point cloud
+// --- 4. SATELLITE LAYER (FIXED) ---
+
 const SAT_COLORS: Record<string, string> = {
-  active: "#3b82f6",
-  debris: "#ef4444",
-  station: "#ffffff",
-  recent: "#22c55e",
+  active: "#3b82f6", // Blue
+  debris: "#ef4444", // Red
+  station: "#ffffff", // White
+  recent: "#22c55e", // Green
 }
 
 function SatelliteLayer({ satellites, visible }: { satellites: SatellitePosition[]; visible: boolean }) {
@@ -327,23 +314,25 @@ function SatelliteLayer({ satellites, visible }: { satellites: SatellitePosition
       return { matrices: new Float32Array(0), colors: new Float32Array(0), count: 0 }
     }
 
-    const cnt = satellites.length
-    const mat = new Float32Array(cnt * 16)
-    const col = new Float32Array(cnt * 3)
-    const dummy = new THREE.Matrix4()
+    const tempObject = new THREE.Object3D()
     const color = new THREE.Color()
 
-    for (let i = 0; i < cnt; i++) {
+    for (let i = 0; i < satellites.length; i++) {
       const sat = satellites[i]
       const normAlt = Math.min(sat.altitudeKm / 2000, 1)
-      const radius = 2.08 + normAlt * 0.3
+      const radius = 2.1 + normAlt * 0.4 // Lifted off surface
       const pos = latLonToVector3(sat.lat, sat.lon, radius)
+      
+      tempObject.position.copy(pos)
+      
+      // Calculate Scale (make them visible)
+      const scale = sat.type === "station" ? 0.04 : sat.type === "debris" ? 0.015 : 0.02
+      tempObject.scale.setScalar(scale)
+      
+      tempObject.updateMatrix()
+      meshRef.current.setMatrixAt(i, tempObject.matrix)
 
-      const size = sat.type === "station" ? 0.025 : sat.type === "debris" ? 0.012 : 0.015
-      dummy.makeScale(size, size, size)
-      dummy.setPosition(pos)
-      dummy.toArray(mat, i * 16)
-
+      // Calculate Color
       color.set(SAT_COLORS[sat.type] || "#3b82f6")
       col[i * 3] = color.r
       col[i * 3 + 1] = color.g
@@ -362,9 +351,11 @@ function SatelliteLayer({ satellites, visible }: { satellites: SatellitePosition
       const color = new THREE.Color(colors[i * 3], colors[i * 3 + 1], colors[i * 3 + 2])
       meshRef.current.setColorAt(i, color)
     }
+
     meshRef.current.instanceMatrix.needsUpdate = true
     if (meshRef.current.instanceColor) meshRef.current.instanceColor.needsUpdate = true
-  })
+
+  }, [satellites])
 
   const satLength = satellites?.length ?? 0
 
@@ -378,8 +369,7 @@ function SatelliteLayer({ satellites, visible }: { satellites: SatellitePosition
 
   const handlePointerOut = useCallback(() => setHoveredIdx(null), [])
 
-  if (!visible || count === 0) return null
-
+  if (!satellites || satellites.length === 0) return null
   const hoveredSat = hoveredIdx !== null ? satellites[hoveredIdx] : null
 
   return (
@@ -388,16 +378,18 @@ function SatelliteLayer({ satellites, visible }: { satellites: SatellitePosition
         <sphereGeometry args={[1, 6, 6]} />
         <meshBasicMaterial toneMapped={false} />
       </instancedMesh>
+      
+      {/* Tooltip */}
       {hoveredSat && (
-        <group position={latLonToVector3(hoveredSat.lat, hoveredSat.lon, 2.1 + Math.min(hoveredSat.altitudeKm / 2000, 1) * 0.3)}>
+        <group position={latLonToVector3(hoveredSat.lat, hoveredSat.lon, 2.15 + Math.min(hoveredSat.altitudeKm / 2000, 1) * 0.4)}>
           <Html distanceFactor={6} style={{ pointerEvents: "none" }}>
-            <div className="rounded-md bg-card/95 px-3 py-2 text-xs font-sans text-card-foreground shadow-lg border border-border whitespace-nowrap backdrop-blur-sm">
-              <div className="font-medium">{hoveredSat.name}</div>
-              <div className="text-muted-foreground flex gap-2">
+            <div className="rounded-md bg-black/90 px-3 py-2 text-xs font-sans text-white shadow-lg border border-white/20 whitespace-nowrap backdrop-blur-sm z-50">
+              <div className="font-medium text-blue-300">{hoveredSat.name}</div>
+              <div className="text-gray-300 flex gap-2">
                 <span>NORAD {hoveredSat.noradId}</span>
                 <span>Alt: {Math.round(hoveredSat.altitudeKm)} km</span>
               </div>
-              <div className="text-muted-foreground capitalize">{hoveredSat.type}</div>
+              <div className="text-gray-400 capitalize">{hoveredSat.type}</div>
             </div>
           </Html>
         </group>
@@ -406,7 +398,8 @@ function SatelliteLayer({ satellites, visible }: { satellites: SatellitePosition
   )
 }
 
-// Main scene content
+// --- 5. MAIN SCENE ---
+
 function GlobeScene({
   launchSite,
   corridorPath,
@@ -414,7 +407,6 @@ function GlobeScene({
   hotspots,
   showCorridor,
   showHotspots,
-  showSatellites,
   satellites,
   compareCorridorPath,
   onHotspotHover,
@@ -425,7 +417,6 @@ function GlobeScene({
   hotspots: Hotspot[]
   showCorridor: boolean
   showHotspots: boolean
-  showSatellites: boolean
   satellites: SatellitePosition[]
   compareCorridorPath?: { lat: number; lon: number }[]
   onHotspotHover: (h: Hotspot | null) => void
@@ -436,10 +427,12 @@ function GlobeScene({
       <directionalLight position={[10, 3, 10]} intensity={1.6} />
       <Stars radius={100} depth={50} count={2000} factor={4} saturation={0} fade speed={1} />
 
+      {/* Textured Earth */}
       <Earth />
       <Atmosphere />
 
-      <SatelliteLayer satellites={satellites} visible={showSatellites} />
+      {/* Satellites - Always Visible */}
+      <SatelliteLayer satellites={satellites} />
 
       {launchSite && <LaunchSiteMarker lat={launchSite.lat} lon={launchSite.lon} name={launchSite.name} isActive />}
 
@@ -462,6 +455,8 @@ function GlobeScene({
   )
 }
 
+// --- 6. EXPORTED COMPONENT ---
+
 interface GlobeVisualizationProps {
   launchSite: { lat: number; lon: number; name: string } | null
   corridorPath: { lat: number; lon: number }[]
@@ -481,7 +476,7 @@ export default function GlobeVisualization({
   hotspots,
   showCorridor,
   showHotspots,
-  showSatellites,
+  showSatellites, // Ignored: Satellites are always shown now
   satellites,
   compareCorridorPath,
 }: GlobeVisualizationProps) {
