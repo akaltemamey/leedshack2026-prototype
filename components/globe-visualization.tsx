@@ -18,7 +18,7 @@ function latLonToVector3(lat: number, lon: number, radius: number): THREE.Vector
   return new THREE.Vector3(x, y, z)
 }
 
-// ✅ Realistic Earth textures via jsDelivr (Fix 1 for eduroam)
+// Realistic Earth textures via jsDelivr 
 function Earth() {
   const earthRef = useRef<THREE.Mesh>(null)
   const cloudsRef = useRef<THREE.Mesh>(null)
@@ -32,7 +32,7 @@ function Earth() {
     "https://cdn.jsdelivr.net/gh/mrdoob/three.js@r160/examples/textures/planets/earth_clouds_2048.png",
   ])
 
-  // ✅ Texture quality + color-space compat (prevents white-screen on older three)
+  // Texture quality + color-space compat (prevents white-screen on older three)
   useMemo(() => {
     const setup = (t: THREE.Texture, isColor: boolean) => {
       t.anisotropy = 8
@@ -60,7 +60,6 @@ function Earth() {
 
   useFrame((state) => {
     const t = state.clock.elapsedTime
-    if (earthRef.current) earthRef.current.rotation.y += 0.00025
     if (cloudsRef.current) cloudsRef.current.rotation.y += 0.00035
 
     if (glowRef.current) {
