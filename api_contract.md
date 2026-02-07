@@ -5,7 +5,10 @@ Base URL (local): `http://localhost:8000`
 ## GET /health
 ```json
 { "ok": true }
+```
 
+## GET /metadata
+```json
 {
   "launch_sites": [
     { "name": "Cape Canaveral", "lat": 28.396837, "lon": -80.605659 },
@@ -19,7 +22,10 @@ Base URL (local): `http://localhost:8000`
   ],
   "dataset_timestamp": "demo"
 }
+```
 
+## POST /risk
+```json
 {
   "request": {
     "launch_site": { "name": "Cape Canaveral", "lat": 28.396837, "lon": -80.605659 },
@@ -46,7 +52,10 @@ Base URL (local): `http://localhost:8000`
     "overlays": null
   }
 }
+```
 
+POST /compare (optional)
+```json
 {
   "request": {
     "scenarioA": {
@@ -90,3 +99,4 @@ Base URL (local): `http://localhost:8000`
     }
   }
 }
+```
