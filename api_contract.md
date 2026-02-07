@@ -54,7 +54,7 @@ Base URL (local): `http://localhost:8000`
 }
 ```
 
-POST /compare (optional)
+## POST /compare (optional)
 ```json
 {
   "request": {
