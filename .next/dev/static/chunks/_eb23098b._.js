@@ -790,7 +790,7 @@ const INCLINATION_PRESETS = [
 ];
 const ALTITUDE_RANGE = {
     min: 200,
-    max: 1200
+    max: 3000
 };
 const CORRIDOR_WIDTH_RANGE = {
     min: 5,

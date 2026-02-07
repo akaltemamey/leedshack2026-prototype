@@ -15,7 +15,7 @@ export const INCLINATION_PRESETS = [
   { label: "Sun-synchronous", value: 97.4 },
 ]
 
-export const ALTITUDE_RANGE = { min: 200, max: 1200 }
+export const ALTITUDE_RANGE = { min: 200, max: 3000 }
 export const CORRIDOR_WIDTH_RANGE = { min: 5, max: 100 }
 
 // Simulated debris density by altitude band (objects per 50km band)

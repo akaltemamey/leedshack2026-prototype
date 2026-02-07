@@ -3,7 +3,6 @@ import {
   type OMMRecord,
   ommToPosition,
   computeDensityBands,
-  subsampleForGlobe,
   computeAltitudes,
   type SatellitePosition,
   type DensityBandData,
@@ -89,41 +88,28 @@ async function buildCelestrakData(): Promise<CelestrakResponse> {
   const allOmm = unique.map((u) => u.record)
   const densityBands = computeDensityBands(allOmm)
 
-  // Subsample for globe rendering (max ~800 points for performance)
-  const stationSub = subsampleForGlobe(stations, 30)
-  const activeSub = subsampleForGlobe(active, 400)
-  const debrisSub = subsampleForGlobe([...cosmos1408, ...fengyun1c, ...iridium33], 300)
-  const recentSub = subsampleForGlobe(recent, 70)
-
-  // Convert to positions
+  // Convert ALL unique records to positions (no subsampling)
   const satellites: SatellitePosition[] = []
 
-  const convert = (records: OMMRecord[], type: SatellitePosition["type"]) => {
-    for (const rec of records) {
-      try {
-        const pos = ommToPosition(rec, now)
-        // Filter out objects that are clearly decayed or have bad data
-        if (pos.altitudeKm < 100 || pos.altitudeKm > 50000) continue
-        if (Number.isNaN(pos.lat) || Number.isNaN(pos.lon)) continue
-        satellites.push({
-          name: rec.OBJECT_NAME,
-          noradId: rec.NORAD_CAT_ID,
-          lat: pos.lat,
-          lon: pos.lon,
-          altitudeKm: pos.altitudeKm,
-          inclination: rec.INCLINATION,
-          type,
-        })
-      } catch {
-        // Skip records with bad orbital elements
-      }
+  for (const { record, type } of unique) {
+    try {
+      const pos = ommToPosition(record, now)
+      // Filter out objects that are clearly decayed or have bad data
+      if (pos.altitudeKm < 100 || pos.altitudeKm > 50000) continue
+      if (Number.isNaN(pos.lat) || Number.isNaN(pos.lon)) continue
+      satellites.push({
+        name: record.OBJECT_NAME,
+        noradId: record.NORAD_CAT_ID,
+        lat: pos.lat,
+        lon: pos.lon,
+        altitudeKm: pos.altitudeKm,
+        inclination: record.INCLINATION,
+        type,
+      })
+    } catch {
+      // Skip records with bad orbital elements
     }
   }
-
-  convert(stationSub, "station")
-  convert(activeSub, "active")
-  convert(debrisSub, "debris")
-  convert(recentSub, "recent")
 
   // Compute stats
   const debrisCount = cosmos1408.length + fengyun1c.length + iridium33.length
