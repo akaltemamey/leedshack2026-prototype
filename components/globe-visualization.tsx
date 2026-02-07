@@ -7,6 +7,8 @@ import * as THREE from "three"
 import type { Hotspot } from "@/lib/types"
 import type { SatellitePosition } from "@/lib/orbital"
 
+const EARTH_RADIUS_KM = 6371 // used to map real altitude (km) to visual radius
+
 // Convert lat/lon to 3D position on sphere
 function latLonToVector3(lat: number, lon: number, radius: number): THREE.Vector3 {
   const phi = (90 - lat) * (Math.PI / 180)
@@ -335,8 +337,8 @@ function SatelliteLayer({ satellites, visible }: { satellites: SatellitePosition
 
     for (let i = 0; i < cnt; i++) {
       const sat = satellites[i]
-      const normAlt = Math.min(sat.altitudeKm / 2000, 1)
-      const radius = 2.08 + normAlt * 0.3
+      const altKm = Math.max(0, sat.altitudeKm || 0)
+      const radius = 2.08 * (1 + altKm / EARTH_RADIUS_KM)
       const pos = latLonToVector3(sat.lat, sat.lon, radius)
 
       const size = sat.type === "station" ? 0.025 : sat.type === "debris" ? 0.012 : 0.015
@@ -389,18 +391,25 @@ function SatelliteLayer({ satellites, visible }: { satellites: SatellitePosition
         <meshBasicMaterial toneMapped={false} />
       </instancedMesh>
       {hoveredSat && (
-        <group position={latLonToVector3(hoveredSat.lat, hoveredSat.lon, 2.1 + Math.min(hoveredSat.altitudeKm / 2000, 1) * 0.3)}>
-          <Html distanceFactor={6} style={{ pointerEvents: "none" }}>
-            <div className="rounded-md bg-card/95 px-3 py-2 text-xs font-sans text-card-foreground shadow-lg border border-border whitespace-nowrap backdrop-blur-sm">
-              <div className="font-medium">{hoveredSat.name}</div>
-              <div className="text-muted-foreground flex gap-2">
-                <span>NORAD {hoveredSat.noradId}</span>
-                <span>Alt: {Math.round(hoveredSat.altitudeKm)} km</span>
-              </div>
-              <div className="text-muted-foreground capitalize">{hoveredSat.type}</div>
-            </div>
-          </Html>
-        </group>
+        (() => {
+          const altKm = Math.max(0, hoveredSat.altitudeKm || 0)
+          const satRadius = 2.1 * (1 + altKm / EARTH_RADIUS_KM)
+          const hoverPos = latLonToVector3(hoveredSat.lat, hoveredSat.lon, satRadius + 0.03)
+          return (
+            <group position={hoverPos}>
+              <Html distanceFactor={6} style={{ pointerEvents: "none" }}>
+                <div className="rounded-md bg-card/95 px-3 py-2 text-xs font-sans text-card-foreground shadow-lg border border-border whitespace-nowrap backdrop-blur-sm">
+                  <div className="font-medium">{hoveredSat.name}</div>
+                  <div className="text-muted-foreground flex gap-2">
+                    <span>NORAD {hoveredSat.noradId}</span>
+                    <span>Alt: {Math.round(hoveredSat.altitudeKm)} km</span>
+                  </div>
+                  <div className="text-muted-foreground capitalize">{hoveredSat.type}</div>
+                </div>
+              </Html>
+            </group>
+          )
+        })()
       )}
     </group>
   )
@@ -457,7 +466,7 @@ function GlobeScene({
         <HotspotMarker key={`hotspot-${i}`} hotspot={h} visible={showHotspots} onHover={onHotspotHover} />
       ))}
 
-      <OrbitControls enablePan={false} minDistance={3} maxDistance={8} enableDamping dampingFactor={0.05} />
+      <OrbitControls enablePan={false} minDistance={2} maxDistance={100} enableDamping dampingFactor={0.05} />
     </>
   )
 }
@@ -489,7 +498,7 @@ export default function GlobeVisualization({
 
   return (
     <div className="w-full h-full relative">
-      <Canvas camera={{ position: [0, 0, 5], fov: 45 }} gl={{ antialias: true, alpha: true }} style={{ background: "transparent" }}>
+      <Canvas camera={{ position: [0, 0, 12], fov: 45, near: 0.1, far: 2000 }} gl={{ antialias: true, alpha: true }} style={{ background: "transparent" }}>
         <Suspense fallback={null}>
           <GlobeScene
             launchSite={launchSite}
