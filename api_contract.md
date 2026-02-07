@@ -9,6 +9,7 @@ Response:
 
 GET /metadata
 Response:
+```json
 {
   "launch_sites": [
     {"name":"Cape Canaveral","lat":28.396837,"lon":-80.605659},
