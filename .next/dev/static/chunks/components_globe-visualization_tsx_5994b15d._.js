@@ -31,7 +31,7 @@ function latLonToVector3(lat, lon, radius) {
     const z = radius * Math.sin(phi) * Math.sin(theta);
     return new __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$three$40$0$2e$182$2e$0$2f$node_modules$2f$three$2f$build$2f$three$2e$module$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__.Vector3(x, y, z);
 }
-// ✅ Realistic Earth textures via jsDelivr (Fix 1 for eduroam)
+// Realistic Earth textures via jsDelivr 
 function Earth() {
     _s();
     const earthRef = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$1$2e$6_react$2d$dom$40$19$2e$2$2e$4_react$40$19$2e$2$2e$4_$5f$react$40$19$2e$2$2e$4$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useRef"])(null);
@@ -44,7 +44,7 @@ function Earth() {
         "https://cdn.jsdelivr.net/gh/mrdoob/three.js@r160/examples/textures/planets/earth_specular_2048.jpg",
         "https://cdn.jsdelivr.net/gh/mrdoob/three.js@r160/examples/textures/planets/earth_clouds_2048.png"
     ]);
-    // ✅ Texture quality + color-space compat (prevents white-screen on older three)
+    // Texture quality + color-space compat (prevents white-screen on older three)
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$1$2e$6_react$2d$dom$40$19$2e$2$2e$4_react$40$19$2e$2$2e$4_$5f$react$40$19$2e$2$2e$4$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useMemo"])({
         "Earth.useMemo": ()=>{
             const setup = {
@@ -81,7 +81,6 @@ function Earth() {
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f40$react$2d$three$2b$fiber$40$9$2e$5$2e$0_$40$t_912407648d9f8d2999d4d7078d4eeb04$2f$node_modules$2f40$react$2d$three$2f$fiber$2f$dist$2f$events$2d$5a94e5eb$2e$esm$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__D__as__useFrame$3e$__["useFrame"])({
         "Earth.useFrame": (state)=>{
             const t = state.clock.elapsedTime;
-            if (earthRef.current) earthRef.current.rotation.y += 0.00025;
             if (cloudsRef.current) cloudsRef.current.rotation.y += 0.00035;
             if (glowRef.current) {
                 const mat = glowRef.current.material;
@@ -102,7 +101,7 @@ function Earth() {
                         ]
                     }, void 0, false, {
                         fileName: "[project]/components/globe-visualization.tsx",
-                        lineNumber: 75,
+                        lineNumber: 74,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$1$2e$6_react$2d$dom$40$19$2e$2$2e$4_react$40$19$2e$2$2e$4_$5f$react$40$19$2e$2$2e$4$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("meshPhongMaterial", {
@@ -118,13 +117,13 @@ function Earth() {
                         emissiveIntensity: 0.85
                     }, void 0, false, {
                         fileName: "[project]/components/globe-visualization.tsx",
-                        lineNumber: 76,
+                        lineNumber: 75,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/components/globe-visualization.tsx",
-                lineNumber: 74,
+                lineNumber: 73,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$1$2e$6_react$2d$dom$40$19$2e$2$2e$4_react$40$19$2e$2$2e$4_$5f$react$40$19$2e$2$2e$4$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("mesh", {
@@ -138,7 +137,7 @@ function Earth() {
                         ]
                     }, void 0, false, {
                         fileName: "[project]/components/globe-visualization.tsx",
-                        lineNumber: 92,
+                        lineNumber: 91,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$1$2e$6_react$2d$dom$40$19$2e$2$2e$4_react$40$19$2e$2$2e$4_$5f$react$40$19$2e$2$2e$4$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("meshPhongMaterial", {
@@ -149,13 +148,13 @@ function Earth() {
                         side: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$three$40$0$2e$182$2e$0$2f$node_modules$2f$three$2f$build$2f$three$2e$module$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__.DoubleSide
                     }, void 0, false, {
                         fileName: "[project]/components/globe-visualization.tsx",
-                        lineNumber: 93,
+                        lineNumber: 92,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/components/globe-visualization.tsx",
-                lineNumber: 91,
+                lineNumber: 90,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$1$2e$6_react$2d$dom$40$19$2e$2$2e$4_react$40$19$2e$2$2e$4_$5f$react$40$19$2e$2$2e$4$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("mesh", {
@@ -169,7 +168,7 @@ function Earth() {
                         ]
                     }, void 0, false, {
                         fileName: "[project]/components/globe-visualization.tsx",
-                        lineNumber: 98,
+                        lineNumber: 97,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$1$2e$6_react$2d$dom$40$19$2e$2$2e$4_react$40$19$2e$2$2e$4_$5f$react$40$19$2e$2$2e$4$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("meshBasicMaterial", {
@@ -178,19 +177,19 @@ function Earth() {
                         opacity: 0.05
                     }, void 0, false, {
                         fileName: "[project]/components/globe-visualization.tsx",
-                        lineNumber: 99,
+                        lineNumber: 98,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/components/globe-visualization.tsx",
-                lineNumber: 97,
+                lineNumber: 96,
                 columnNumber: 7
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/components/globe-visualization.tsx",
-        lineNumber: 72,
+        lineNumber: 71,
         columnNumber: 5
     }, this);
 }
@@ -213,7 +212,7 @@ function Atmosphere() {
                 ]
             }, void 0, false, {
                 fileName: "[project]/components/globe-visualization.tsx",
-                lineNumber: 109,
+                lineNumber: 108,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$1$2e$6_react$2d$dom$40$19$2e$2$2e$4_react$40$19$2e$2$2e$4_$5f$react$40$19$2e$2$2e$4$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("meshBasicMaterial", {
@@ -223,13 +222,13 @@ function Atmosphere() {
                 side: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$three$40$0$2e$182$2e$0$2f$node_modules$2f$three$2f$build$2f$three$2e$module$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__.BackSide
             }, void 0, false, {
                 fileName: "[project]/components/globe-visualization.tsx",
-                lineNumber: 110,
+                lineNumber: 109,
                 columnNumber: 7
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/components/globe-visualization.tsx",
-        lineNumber: 108,
+        lineNumber: 107,
         columnNumber: 5
     }, this);
 }
@@ -259,7 +258,7 @@ function LaunchSiteMarker({ lat, lon, name, isActive }) {
                         ]
                     }, void 0, false, {
                         fileName: "[project]/components/globe-visualization.tsx",
-                        lineNumber: 133,
+                        lineNumber: 132,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$1$2e$6_react$2d$dom$40$19$2e$2$2e$4_react$40$19$2e$2$2e$4_$5f$react$40$19$2e$2$2e$4$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("meshBasicMaterial", {
@@ -268,13 +267,13 @@ function LaunchSiteMarker({ lat, lon, name, isActive }) {
                         opacity: isActive ? 1 : 0.6
                     }, void 0, false, {
                         fileName: "[project]/components/globe-visualization.tsx",
-                        lineNumber: 134,
+                        lineNumber: 133,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/components/globe-visualization.tsx",
-                lineNumber: 132,
+                lineNumber: 131,
                 columnNumber: 7
             }, this),
             isActive && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$1$2e$6_react$2d$dom$40$19$2e$2$2e$4_react$40$19$2e$2$2e$4_$5f$react$40$19$2e$2$2e$4$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("mesh", {
@@ -287,7 +286,7 @@ function LaunchSiteMarker({ lat, lon, name, isActive }) {
                         ]
                     }, void 0, false, {
                         fileName: "[project]/components/globe-visualization.tsx",
-                        lineNumber: 138,
+                        lineNumber: 137,
                         columnNumber: 11
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$1$2e$6_react$2d$dom$40$19$2e$2$2e$4_react$40$19$2e$2$2e$4_$5f$react$40$19$2e$2$2e$4$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("meshBasicMaterial", {
@@ -297,13 +296,13 @@ function LaunchSiteMarker({ lat, lon, name, isActive }) {
                         side: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$three$40$0$2e$182$2e$0$2f$node_modules$2f$three$2f$build$2f$three$2e$module$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__.DoubleSide
                     }, void 0, false, {
                         fileName: "[project]/components/globe-visualization.tsx",
-                        lineNumber: 139,
+                        lineNumber: 138,
                         columnNumber: 11
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/components/globe-visualization.tsx",
-                lineNumber: 137,
+                lineNumber: 136,
                 columnNumber: 9
             }, this),
             hovered && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$1$2e$6_react$2d$dom$40$19$2e$2$2e$4_react$40$19$2e$2$2e$4_$5f$react$40$19$2e$2$2e$4$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f40$react$2d$three$2b$drei$40$10$2e$7$2e$7_$40$r_f088b3effe15c796a6b7f7c257c01da3$2f$node_modules$2f40$react$2d$three$2f$drei$2f$web$2f$Html$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Html"], {
@@ -316,18 +315,18 @@ function LaunchSiteMarker({ lat, lon, name, isActive }) {
                     children: name
                 }, void 0, false, {
                     fileName: "[project]/components/globe-visualization.tsx",
-                    lineNumber: 144,
+                    lineNumber: 143,
                     columnNumber: 11
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/components/globe-visualization.tsx",
-                lineNumber: 143,
+                lineNumber: 142,
                 columnNumber: 9
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/components/globe-visualization.tsx",
-        lineNumber: 131,
+        lineNumber: 130,
         columnNumber: 5
     }, this);
 }
@@ -358,12 +357,12 @@ function CorridorPath({ path, visible, color = "#22d3ee" }) {
             opacity: 0.9
         }, void 0, false, {
             fileName: "[project]/components/globe-visualization.tsx",
-            lineNumber: 170,
+            lineNumber: 169,
             columnNumber: 7
         }, this)
     }, void 0, false, {
         fileName: "[project]/components/globe-visualization.tsx",
-        lineNumber: 169,
+        lineNumber: 168,
         columnNumber: 5
     }, this);
 }
@@ -428,12 +427,12 @@ function CorridorBuffer({ path, width, visible, color = "#22d3ee" }) {
             depthWrite: false
         }, void 0, false, {
             fileName: "[project]/components/globe-visualization.tsx",
-            lineNumber: 245,
+            lineNumber: 244,
             columnNumber: 7
         }, this)
     }, void 0, false, {
         fileName: "[project]/components/globe-visualization.tsx",
-        lineNumber: 244,
+        lineNumber: 243,
         columnNumber: 5
     }, this);
 }
@@ -494,20 +493,20 @@ function HotspotMarker({ hotspot, visible, onHover }) {
                         ]
                     }, void 0, false, {
                         fileName: "[project]/components/globe-visualization.tsx",
-                        lineNumber: 293,
+                        lineNumber: 292,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$1$2e$6_react$2d$dom$40$19$2e$2$2e$4_react$40$19$2e$2$2e$4_$5f$react$40$19$2e$2$2e$4$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("meshBasicMaterial", {
                         color: riskColor
                     }, void 0, false, {
                         fileName: "[project]/components/globe-visualization.tsx",
-                        lineNumber: 294,
+                        lineNumber: 293,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/components/globe-visualization.tsx",
-                lineNumber: 292,
+                lineNumber: 291,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$1$2e$6_react$2d$dom$40$19$2e$2$2e$4_react$40$19$2e$2$2e$4_$5f$react$40$19$2e$2$2e$4$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("mesh", {
@@ -521,7 +520,7 @@ function HotspotMarker({ hotspot, visible, onHover }) {
                         ]
                     }, void 0, false, {
                         fileName: "[project]/components/globe-visualization.tsx",
-                        lineNumber: 297,
+                        lineNumber: 296,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$1$2e$6_react$2d$dom$40$19$2e$2$2e$4_react$40$19$2e$2$2e$4_$5f$react$40$19$2e$2$2e$4$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("meshBasicMaterial", {
@@ -530,13 +529,13 @@ function HotspotMarker({ hotspot, visible, onHover }) {
                         opacity: 0.3
                     }, void 0, false, {
                         fileName: "[project]/components/globe-visualization.tsx",
-                        lineNumber: 298,
+                        lineNumber: 297,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/components/globe-visualization.tsx",
-                lineNumber: 296,
+                lineNumber: 295,
                 columnNumber: 7
             }, this),
             hovered && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$1$2e$6_react$2d$dom$40$19$2e$2$2e$4_react$40$19$2e$2$2e$4_$5f$react$40$19$2e$2$2e$4$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f40$react$2d$three$2b$drei$40$10$2e$7$2e$7_$40$r_f088b3effe15c796a6b7f7c257c01da3$2f$node_modules$2f40$react$2d$three$2f$drei$2f$web$2f$Html$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Html"], {
@@ -552,7 +551,7 @@ function HotspotMarker({ hotspot, visible, onHover }) {
                             children: hotspot.label
                         }, void 0, false, {
                             fileName: "[project]/components/globe-visualization.tsx",
-                            lineNumber: 303,
+                            lineNumber: 302,
                             columnNumber: 13
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$1$2e$6_react$2d$dom$40$19$2e$2$2e$4_react$40$19$2e$2$2e$4_$5f$react$40$19$2e$2$2e$4$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -566,24 +565,24 @@ function HotspotMarker({ hotspot, visible, onHover }) {
                             ]
                         }, void 0, true, {
                             fileName: "[project]/components/globe-visualization.tsx",
-                            lineNumber: 304,
+                            lineNumber: 303,
                             columnNumber: 13
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/components/globe-visualization.tsx",
-                    lineNumber: 302,
+                    lineNumber: 301,
                     columnNumber: 11
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/components/globe-visualization.tsx",
-                lineNumber: 301,
+                lineNumber: 300,
                 columnNumber: 9
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/components/globe-visualization.tsx",
-        lineNumber: 291,
+        lineNumber: 290,
         columnNumber: 5
     }, this);
 }
@@ -690,20 +689,20 @@ function SatelliteLayer({ satellites, visible }) {
                         ]
                     }, void 0, false, {
                         fileName: "[project]/components/globe-visualization.tsx",
-                        lineNumber: 389,
+                        lineNumber: 388,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$1$2e$6_react$2d$dom$40$19$2e$2$2e$4_react$40$19$2e$2$2e$4_$5f$react$40$19$2e$2$2e$4$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("meshBasicMaterial", {
                         toneMapped: false
                     }, void 0, false, {
                         fileName: "[project]/components/globe-visualization.tsx",
-                        lineNumber: 390,
+                        lineNumber: 389,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/components/globe-visualization.tsx",
-                lineNumber: 388,
+                lineNumber: 387,
                 columnNumber: 7
             }, this),
             hoveredSat && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$1$2e$6_react$2d$dom$40$19$2e$2$2e$4_react$40$19$2e$2$2e$4_$5f$react$40$19$2e$2$2e$4$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("group", {
@@ -721,7 +720,7 @@ function SatelliteLayer({ satellites, visible }) {
                                 children: hoveredSat.name
                             }, void 0, false, {
                                 fileName: "[project]/components/globe-visualization.tsx",
-                                lineNumber: 396,
+                                lineNumber: 395,
                                 columnNumber: 15
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$1$2e$6_react$2d$dom$40$19$2e$2$2e$4_react$40$19$2e$2$2e$4_$5f$react$40$19$2e$2$2e$4$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -734,7 +733,7 @@ function SatelliteLayer({ satellites, visible }) {
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/components/globe-visualization.tsx",
-                                        lineNumber: 398,
+                                        lineNumber: 397,
                                         columnNumber: 17
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$1$2e$6_react$2d$dom$40$19$2e$2$2e$4_react$40$19$2e$2$2e$4_$5f$react$40$19$2e$2$2e$4$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -745,13 +744,13 @@ function SatelliteLayer({ satellites, visible }) {
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/components/globe-visualization.tsx",
-                                        lineNumber: 399,
+                                        lineNumber: 398,
                                         columnNumber: 17
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/components/globe-visualization.tsx",
-                                lineNumber: 397,
+                                lineNumber: 396,
                                 columnNumber: 15
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$1$2e$6_react$2d$dom$40$19$2e$2$2e$4_react$40$19$2e$2$2e$4_$5f$react$40$19$2e$2$2e$4$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -759,29 +758,29 @@ function SatelliteLayer({ satellites, visible }) {
                                 children: hoveredSat.type
                             }, void 0, false, {
                                 fileName: "[project]/components/globe-visualization.tsx",
-                                lineNumber: 401,
+                                lineNumber: 400,
                                 columnNumber: 15
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/components/globe-visualization.tsx",
-                        lineNumber: 395,
+                        lineNumber: 394,
                         columnNumber: 13
                     }, this)
                 }, void 0, false, {
                     fileName: "[project]/components/globe-visualization.tsx",
-                    lineNumber: 394,
+                    lineNumber: 393,
                     columnNumber: 11
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/components/globe-visualization.tsx",
-                lineNumber: 393,
+                lineNumber: 392,
                 columnNumber: 9
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/components/globe-visualization.tsx",
-        lineNumber: 387,
+        lineNumber: 386,
         columnNumber: 5
     }, this);
 }
@@ -799,7 +798,7 @@ function GlobeScene({ launchSite, corridorPath, corridorWidth, hotspots, showCor
                 intensity: 0.25
             }, void 0, false, {
                 fileName: "[project]/components/globe-visualization.tsx",
-                lineNumber: 436,
+                lineNumber: 435,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$1$2e$6_react$2d$dom$40$19$2e$2$2e$4_react$40$19$2e$2$2e$4_$5f$react$40$19$2e$2$2e$4$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("directionalLight", {
@@ -811,7 +810,7 @@ function GlobeScene({ launchSite, corridorPath, corridorWidth, hotspots, showCor
                 intensity: 1.6
             }, void 0, false, {
                 fileName: "[project]/components/globe-visualization.tsx",
-                lineNumber: 437,
+                lineNumber: 436,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$1$2e$6_react$2d$dom$40$19$2e$2$2e$4_react$40$19$2e$2$2e$4_$5f$react$40$19$2e$2$2e$4$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f40$react$2d$three$2b$drei$40$10$2e$7$2e$7_$40$r_f088b3effe15c796a6b7f7c257c01da3$2f$node_modules$2f40$react$2d$three$2f$drei$2f$core$2f$Stars$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Stars"], {
@@ -824,17 +823,17 @@ function GlobeScene({ launchSite, corridorPath, corridorWidth, hotspots, showCor
                 speed: 1
             }, void 0, false, {
                 fileName: "[project]/components/globe-visualization.tsx",
-                lineNumber: 438,
+                lineNumber: 437,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$1$2e$6_react$2d$dom$40$19$2e$2$2e$4_react$40$19$2e$2$2e$4_$5f$react$40$19$2e$2$2e$4$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(Earth, {}, void 0, false, {
                 fileName: "[project]/components/globe-visualization.tsx",
-                lineNumber: 440,
+                lineNumber: 439,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$1$2e$6_react$2d$dom$40$19$2e$2$2e$4_react$40$19$2e$2$2e$4_$5f$react$40$19$2e$2$2e$4$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(Atmosphere, {}, void 0, false, {
                 fileName: "[project]/components/globe-visualization.tsx",
-                lineNumber: 441,
+                lineNumber: 440,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$1$2e$6_react$2d$dom$40$19$2e$2$2e$4_react$40$19$2e$2$2e$4_$5f$react$40$19$2e$2$2e$4$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(SatelliteLayer, {
@@ -842,7 +841,7 @@ function GlobeScene({ launchSite, corridorPath, corridorWidth, hotspots, showCor
                 visible: showSatellites
             }, void 0, false, {
                 fileName: "[project]/components/globe-visualization.tsx",
-                lineNumber: 443,
+                lineNumber: 442,
                 columnNumber: 7
             }, this),
             launchSite && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$1$2e$6_react$2d$dom$40$19$2e$2$2e$4_react$40$19$2e$2$2e$4_$5f$react$40$19$2e$2$2e$4$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(LaunchSiteMarker, {
@@ -852,7 +851,7 @@ function GlobeScene({ launchSite, corridorPath, corridorWidth, hotspots, showCor
                 isActive: true
             }, void 0, false, {
                 fileName: "[project]/components/globe-visualization.tsx",
-                lineNumber: 445,
+                lineNumber: 444,
                 columnNumber: 22
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$1$2e$6_react$2d$dom$40$19$2e$2$2e$4_react$40$19$2e$2$2e$4_$5f$react$40$19$2e$2$2e$4$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(CorridorPath, {
@@ -860,7 +859,7 @@ function GlobeScene({ launchSite, corridorPath, corridorWidth, hotspots, showCor
                 visible: showCorridor
             }, void 0, false, {
                 fileName: "[project]/components/globe-visualization.tsx",
-                lineNumber: 447,
+                lineNumber: 446,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$1$2e$6_react$2d$dom$40$19$2e$2$2e$4_react$40$19$2e$2$2e$4_$5f$react$40$19$2e$2$2e$4$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(CorridorBuffer, {
@@ -869,7 +868,7 @@ function GlobeScene({ launchSite, corridorPath, corridorWidth, hotspots, showCor
                 visible: showCorridor
             }, void 0, false, {
                 fileName: "[project]/components/globe-visualization.tsx",
-                lineNumber: 448,
+                lineNumber: 447,
                 columnNumber: 7
             }, this),
             compareCorridorPath && compareCorridorPath.length > 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$1$2e$6_react$2d$dom$40$19$2e$2$2e$4_react$40$19$2e$2$2e$4_$5f$react$40$19$2e$2$2e$4$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$1$2e$6_react$2d$dom$40$19$2e$2$2e$4_react$40$19$2e$2$2e$4_$5f$react$40$19$2e$2$2e$4$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Fragment"], {
@@ -880,7 +879,7 @@ function GlobeScene({ launchSite, corridorPath, corridorWidth, hotspots, showCor
                         color: "#f59e0b"
                     }, void 0, false, {
                         fileName: "[project]/components/globe-visualization.tsx",
-                        lineNumber: 452,
+                        lineNumber: 451,
                         columnNumber: 11
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$1$2e$6_react$2d$dom$40$19$2e$2$2e$4_react$40$19$2e$2$2e$4_$5f$react$40$19$2e$2$2e$4$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(CorridorBuffer, {
@@ -890,7 +889,7 @@ function GlobeScene({ launchSite, corridorPath, corridorWidth, hotspots, showCor
                         color: "#f59e0b"
                     }, void 0, false, {
                         fileName: "[project]/components/globe-visualization.tsx",
-                        lineNumber: 453,
+                        lineNumber: 452,
                         columnNumber: 11
                     }, this)
                 ]
@@ -901,7 +900,7 @@ function GlobeScene({ launchSite, corridorPath, corridorWidth, hotspots, showCor
                     onHover: onHotspotHover
                 }, `hotspot-${i}`, false, {
                     fileName: "[project]/components/globe-visualization.tsx",
-                    lineNumber: 458,
+                    lineNumber: 457,
                     columnNumber: 9
                 }, this)),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$1$2e$6_react$2d$dom$40$19$2e$2$2e$4_react$40$19$2e$2$2e$4_$5f$react$40$19$2e$2$2e$4$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f40$react$2d$three$2b$drei$40$10$2e$7$2e$7_$40$r_f088b3effe15c796a6b7f7c257c01da3$2f$node_modules$2f40$react$2d$three$2f$drei$2f$core$2f$OrbitControls$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["OrbitControls"], {
@@ -912,7 +911,7 @@ function GlobeScene({ launchSite, corridorPath, corridorWidth, hotspots, showCor
                 dampingFactor: 0.05
             }, void 0, false, {
                 fileName: "[project]/components/globe-visualization.tsx",
-                lineNumber: 461,
+                lineNumber: 460,
                 columnNumber: 7
             }, this)
         ]
@@ -955,22 +954,22 @@ function GlobeVisualization({ launchSite, corridorPath, corridorWidth, hotspots,
                     onHotspotHover: setHoveredHotspot
                 }, void 0, false, {
                     fileName: "[project]/components/globe-visualization.tsx",
-                    lineNumber: 495,
+                    lineNumber: 494,
                     columnNumber: 11
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/components/globe-visualization.tsx",
-                lineNumber: 494,
+                lineNumber: 493,
                 columnNumber: 9
             }, this)
         }, void 0, false, {
             fileName: "[project]/components/globe-visualization.tsx",
-            lineNumber: 493,
+            lineNumber: 492,
             columnNumber: 7
         }, this)
     }, void 0, false, {
         fileName: "[project]/components/globe-visualization.tsx",
-        lineNumber: 492,
+        lineNumber: 491,
         columnNumber: 5
     }, this);
 }
