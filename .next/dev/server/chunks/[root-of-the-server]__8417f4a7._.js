@@ -257,42 +257,27 @@ async function buildCelestrakData() {
     // Compute density bands from ALL records
     const allOmm = unique.map((u)=>u.record);
     const densityBands = (0, __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$orbital$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["computeDensityBands"])(allOmm);
-    // Subsample for globe rendering (max ~800 points for performance)
-    const stationSub = (0, __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$orbital$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["subsampleForGlobe"])(stations, 30);
-    const activeSub = (0, __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$orbital$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["subsampleForGlobe"])(active, 400);
-    const debrisSub = (0, __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$orbital$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["subsampleForGlobe"])([
-        ...cosmos1408,
-        ...fengyun1c,
-        ...iridium33
-    ], 300);
-    const recentSub = (0, __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$orbital$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["subsampleForGlobe"])(recent, 70);
-    // Convert to positions
+    // Convert ALL unique records to positions (no subsampling)
     const satellites = [];
-    const convert = (records, type)=>{
-        for (const rec of records){
-            try {
-                const pos = (0, __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$orbital$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["ommToPosition"])(rec, now);
-                // Filter out objects that are clearly decayed or have bad data
-                if (pos.altitudeKm < 100 || pos.altitudeKm > 50000) continue;
-                if (Number.isNaN(pos.lat) || Number.isNaN(pos.lon)) continue;
-                satellites.push({
-                    name: rec.OBJECT_NAME,
-                    noradId: rec.NORAD_CAT_ID,
-                    lat: pos.lat,
-                    lon: pos.lon,
-                    altitudeKm: pos.altitudeKm,
-                    inclination: rec.INCLINATION,
-                    type
-                });
-            } catch  {
-            // Skip records with bad orbital elements
-            }
+    for (const { record, type } of unique){
+        try {
+            const pos = (0, __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$orbital$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["ommToPosition"])(record, now);
+            // Filter out objects that are clearly decayed or have bad data
+            if (pos.altitudeKm < 100 || pos.altitudeKm > 50000) continue;
+            if (Number.isNaN(pos.lat) || Number.isNaN(pos.lon)) continue;
+            satellites.push({
+                name: record.OBJECT_NAME,
+                noradId: record.NORAD_CAT_ID,
+                lat: pos.lat,
+                lon: pos.lon,
+                altitudeKm: pos.altitudeKm,
+                inclination: record.INCLINATION,
+                type
+            });
+        } catch  {
+        // Skip records with bad orbital elements
         }
-    };
-    convert(stationSub, "station");
-    convert(activeSub, "active");
-    convert(debrisSub, "debris");
-    convert(recentSub, "recent");
+    }
     // Compute stats
     const debrisCount = cosmos1408.length + fengyun1c.length + iridium33.length;
     const altitudes = allOmm.map((r)=>(0, __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$orbital$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["computeAltitudes"])(r.MEAN_MOTION, r.ECCENTRICITY).mean).filter((a)=>a > 0 && a < 50000);
