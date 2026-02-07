@@ -7,7 +7,7 @@ Response:
 ```json
 { "ok": true }
 
-## GET /metadata
+GET /metadata
 Response:
 {
   "launch_sites": [
