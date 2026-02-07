@@ -9,7 +9,6 @@ Base URL (local): `http://localhost:8000`
 ### Response
 ```json
 { "ok": true }
-GET /metadata
 Response
 {
   "launch_sites": [
@@ -95,11 +94,3 @@ Response
     "overlays": null
   }
 }
-
----
-
-# ✅ 你现在的截图里为什么会“跑到代码框里”
-因为你的 `GET /health` 的 JSON 代码块：
-```md
-```json
-{ "ok": true }
