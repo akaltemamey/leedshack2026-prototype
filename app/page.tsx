@@ -11,7 +11,6 @@ import HotspotsList from "@/components/hotspots-list"
 import LayerToggles from "@/components/layer-toggles"
 import ComparePanel from "@/components/compare-panel"
 import TrackingStatsCard from "@/components/tracking-stats-card"
-import WeatherConditions, { type WeatherData } from "@/components/weather-conditions"
 import type { LaunchProfile, RiskAssessment, CompareResult } from "@/lib/types"
 import type { SatellitePosition, DensityBandData } from "@/lib/orbital"
 
@@ -43,9 +42,6 @@ export default function DashboardPage() {
   const [profileA, setProfileA] = useState<LaunchProfile | null>(null)
   const [profileB, setProfileB] = useState<LaunchProfile | null>(null)
   const [error, setError] = useState<string | null>(null)
-  const [weatherData, setWeatherData] = useState<WeatherData | null>(null)
-  const [weatherDataA, setWeatherDataA] = useState<WeatherData | null>(null)
-  const [weatherDataB, setWeatherDataB] = useState<WeatherData | null>(null)
   const [weatherPrediction, setWeatherPrediction] = useState<any>(null)
   const [weatherPredictionA, setWeatherPredictionA] = useState<any>(null)
   const [weatherPredictionB, setWeatherPredictionB] = useState<any>(null)
@@ -85,16 +81,16 @@ export default function DashboardPage() {
       if (!res.ok) throw new Error("Failed to calculate risk")
       let data = (await res.json()) as RiskAssessment
       
-      // Fetch weather prediction if weather data is provided
-      const weatherToUse = compareMode ? weatherDataA : weatherData
-      if (weatherToUse && weatherToUse.site_name && weatherToUse.target_time) {
+      // Fetch weather prediction using profile's launch site and window
+      if (profile.launchSite?.name && profile.launchDatetimeUtc) {
         try {
+          const siteName = profile.launchSite.name.replace(/\s+/g, "_")
           const weatherRes = await fetch("/api/weather/predict", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-              site_name: weatherToUse.site_name,
-              target_time: weatherToUse.target_time,
+              site_name: siteName,
+              target_time: profile.launchDatetimeUtc,
             }),
           })
 
@@ -175,7 +171,7 @@ export default function DashboardPage() {
     } finally {
       setIsLoadingA(false)
     }
-  }, [compareMode, profileB, weatherData, weatherDataA])
+  }, [compareMode, profileB])
 
   const handleRunAssessmentB = useCallback(async (profile: LaunchProfile) => {
     setIsLoadingB(true)
@@ -191,15 +187,16 @@ export default function DashboardPage() {
       if (!res.ok) throw new Error("Failed to calculate risk")
       let data = (await res.json()) as RiskAssessment
       
-      // Fetch weather prediction if weather data B is provided
-      if (weatherDataB && weatherDataB.site_name && weatherDataB.target_time) {
+      // Fetch weather prediction using profile's launch site and window
+      if (profile.launchSite?.name && profile.launchDatetimeUtc) {
         try {
+          const siteName = profile.launchSite.name.replace(/\s+/g, "_")
           const weatherRes = await fetch("/api/weather/predict", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-              site_name: weatherDataB.site_name,
-              target_time: weatherDataB.target_time,
+              site_name: siteName,
+              target_time: profile.launchDatetimeUtc,
             }),
           })
 
@@ -251,7 +248,7 @@ export default function DashboardPage() {
     } finally {
       setIsLoadingB(false)
     }
-  }, [profileA, weatherDataB])
+  }, [profileA])
 
   async function runCompare(a: LaunchProfile, b: LaunchProfile) {
     try {
@@ -379,11 +376,6 @@ export default function DashboardPage() {
                   isLoading={isLoadingA}
                   label="Scenario A"
                 />
-                <WeatherConditions
-                  launchSite={profileA?.launchSite.name || "Cape_Canaveral"}
-                  launchWindow={profileA?.launchWindow || new Date().toISOString().slice(0, 16)}
-                  onWeatherDataChange={setWeatherDataA}
-                />
                 {weatherPredictionA && (
                   <div className="border border-border/50 bg-card/80 backdrop-blur-sm rounded-lg p-3 space-y-2">
                     <div className="flex items-center justify-between">
@@ -414,11 +406,6 @@ export default function DashboardPage() {
                   onSubmit={handleRunAssessmentB}
                   isLoading={isLoadingB}
                   label="Scenario B"
-                />
-                <WeatherConditions
-                  launchSite={profileB?.launchSite.name || "Cape_Canaveral"}
-                  launchWindow={profileB?.launchWindow || new Date().toISOString().slice(0, 16)}
-                  onWeatherDataChange={setWeatherDataB}
                 />
                 {weatherPredictionB && (
                   <div className="border border-border/50 bg-card/80 backdrop-blur-sm rounded-lg p-3 space-y-2">
@@ -456,11 +443,6 @@ export default function DashboardPage() {
               <>
                 <TrackingStatsCard stats={celestrakStats} densityBands={densityBands} />
                 <LaunchProfileForm onSubmit={handleRunAssessmentA} isLoading={isLoadingA} />
-                <WeatherConditions
-                  launchSite={profileA?.launchSite.name || "Cape Canaveral"}
-                  launchWindow={profileA?.launchWindow || new Date().toISOString().slice(0, 16)}
-                  onWeatherDataChange={setWeatherData}
-                />
                 {weatherPrediction && (
                   <div className="border border-border/50 bg-card/80 backdrop-blur-sm rounded-lg p-4 space-y-3">
                     <div className="flex items-center justify-between">

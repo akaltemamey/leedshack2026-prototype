@@ -1,5 +1,124 @@
-[00:00:01.430] Server  LOG     ✓ Ready in 942ms
-[00:00:02.769] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
-[00:02:04.992] Server  LOG     ✓ Compiled in 828ms
-[00:02:11.944] Server  LOG     ✓ Compiled in 92ms
-[00:02:28.881] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:00:01.108] Server  LOG     ✓ Ready in 735ms
+[00:00:16.386] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:01:48.341] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:08:39.712] Server  ERROR   ⨯ ReferenceError: WeatherConditions is not defined
+[00:08:39.723] Server  LOG     ✓ Compiled in 923ms
+[00:08:40.473] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:08:41.459] Browser ERROR   uncaughtError: ReferenceError: WeatherConditions is not defined
+[00:08:43.417] Server  WARN    ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+[00:08:43.715] Server  ERROR   ⨯ ReferenceError: weatherData is not defined
+[00:08:43.727] Server  LOG     ✓ Compiled in 80ms
+[00:08:44.165] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:08:44.459] Browser ERROR   uncaughtError: ReferenceError: weatherData is not defined
+[00:08:58.681] Server  LOG     ✓ Compiled in 84ms
+[00:08:58.700] Server  WARN    ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+[00:08:59.030] Server  ERROR   ⨯ ReferenceError: weatherDataB is not defined
+[00:08:59.475] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:09:00.464] Browser ERROR   uncaughtError: ReferenceError: weatherDataB is not defined
+[00:09:08.672] Server  WARN    ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+[00:09:08.967] Server  ERROR   ⨯ ReferenceError: WeatherConditions is not defined
+[00:09:08.979] Server  LOG     ✓ Compiled in 71ms
+[00:09:09.427] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:09:10.454] Browser ERROR   uncaughtError: ReferenceError: WeatherConditions is not defined
+[00:09:17.951] Server  WARN    ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+[00:09:18.405] Server  LOG     ✓ Compiled in 67ms
+[00:09:18.885] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:09:28.339] Server  LOG     ✓ Compiled in 86ms
+[00:12:03.342] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:13:20.840] Server  LOG     ✓ Compiled in 80ms
+[00:13:43.684] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:14:26.680] Server  LOG     ✓ Compiled in 72ms
+[00:14:27.259] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:14:34.378] Server  ERROR   Weather API error (404): "{\"detail\":\"Site not found. Options: ['Cape_Canaveral', 'Vandenberg', 'Baikonur', 'Kourou']\"}"
+[00:16:47.641] Server  LOG     ✓ Compiled in 67ms
+[00:16:48.452] Browser ERROR   uncaughtError: ReferenceError: Select is not defined
+[00:16:49.455] Browser LOG     THREE.WebGLRenderer: Context Lost.
+[00:16:54.892] Server  WARN    ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+[00:16:55.399] Server  LOG     ✓ Compiled in 77ms
+[00:16:56.011] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:17:01.307] Server  LOG     ✓ Compiled in 78ms
+[00:17:01.453] Browser ERROR   uncaughtError: ReferenceError: weatherData is not defined
+[00:17:09.311] Server  WARN    ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+[00:17:09.333] Server  LOG     ✓ Compiled in 58ms
+[00:17:09.626] Server  ERROR   ⨯ ReferenceError: weatherData is not defined
+[00:17:09.636] Browser ERROR   uncaughtError: ReferenceError: weatherData is not defined
+[00:17:09.994] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:17:10.448] Browser ERROR   uncaughtError: ReferenceError: weatherData is not defined
+[00:17:16.712] Server  WARN    ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+[00:17:16.729] Server  LOG     ✓ Compiled in 67ms
+[00:17:17.894] Server  ERROR   ⨯ ReferenceError: weatherDataB is not defined
+[00:17:18.479] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:17:19.452] Browser ERROR   uncaughtError: ReferenceError: weatherDataB is not defined
+[00:17:31.401] Server  WARN    ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+[00:17:31.416] Server  LOG     ✓ Compiled in 61ms
+[00:17:31.681] Server  ERROR   ⨯ ReferenceError: weatherDataB is not defined
+[00:17:32.270] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:17:33.447] Browser ERROR   uncaughtError: ReferenceError: weatherDataB is not defined
+[00:17:33.889] Server  WARN    ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+[00:17:34.156] Server  ERROR   ⨯ ReferenceError: weatherDataB is not defined
+[00:17:34.165] Server  LOG     ✓ Compiled in 63ms
+[00:17:34.794] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:17:35.456] Browser ERROR   uncaughtError: ReferenceError: weatherDataB is not defined
+[00:17:36.095] Server  WARN    ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+[00:17:36.112] Server  LOG     ✓ Compiled in 56ms
+[00:17:36.357] Server  ERROR   ⨯ ReferenceError: weatherDataB is not defined
+[00:17:37.040] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:17:37.466] Browser ERROR   uncaughtError: ReferenceError: weatherDataB is not defined
+[00:17:53.974] Server  WARN    ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+[00:17:53.992] Server  LOG     ✓ Compiled in 58ms
+[00:17:54.227] Server  ERROR   ⨯ ReferenceError: weatherDataB is not defined
+[00:17:54.973] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:17:55.456] Browser ERROR   uncaughtError: ReferenceError: weatherDataB is not defined
+[00:17:57.030] Server  WARN    ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+[00:17:57.285] Server  ERROR   ⨯ ReferenceError: weatherDataB is not defined
+[00:17:57.295] Server  LOG     ✓ Compiled in 56ms
+[00:17:57.996] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:17:58.453] Browser ERROR   uncaughtError: ReferenceError: weatherDataB is not defined
+[00:19:31.418] Server  WARN    ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+[00:19:31.907] Server  LOG     ✓ Compiled in 74ms
+[00:19:32.982] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:21:46.743] Server  LOG     ✓ Compiled in 84ms
+[00:21:47.052] Server  ERROR   ⨯ ReferenceError: WeatherConditions is not defined
+[00:21:47.826] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:21:48.454] Browser ERROR   uncaughtError: ReferenceError: WeatherConditions is not defined
+[00:21:51.302] Server  WARN    ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+[00:21:51.314] Server  LOG     ✓ Compiled in 76ms
+[00:21:51.582] Server  ERROR   ⨯ ReferenceError: weatherData is not defined
+[00:21:52.549] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:21:53.458] Browser ERROR   uncaughtError: ReferenceError: weatherData is not defined
+[00:21:55.725] Server  WARN    ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+[00:21:55.735] Server  LOG     ✓ Compiled in 85ms
+[00:21:56.015] Server  ERROR   ⨯ ReferenceError: weatherData is not defined
+[00:21:56.821] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:21:57.461] Browser ERROR   uncaughtError: ReferenceError: weatherData is not defined
+[00:21:58.387] Server  WARN    ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+[00:21:58.672] Server  ERROR   ⨯ ReferenceError: weatherDataB is not defined
+[00:21:58.682] Server  LOG     ✓ Compiled in 90ms
+[00:21:59.385] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:22:00.450] Browser ERROR   uncaughtError: ReferenceError: weatherDataB is not defined
+[00:22:04.834] Server  WARN    ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+[00:22:04.846] Server  LOG     ✓ Compiled in 62ms
+[00:22:05.135] Server  ERROR   ⨯ ReferenceError: weatherDataB is not defined
+[00:22:05.959] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:22:06.454] Browser ERROR   uncaughtError: ReferenceError: weatherDataB is not defined
+[00:22:10.079] Server  WARN    ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+[00:22:10.368] Server  ERROR   ⨯ ReferenceError: WeatherConditions is not defined
+[00:22:10.378] Server  LOG     ✓ Compiled in 72ms
+[00:22:11.198] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:22:11.455] Browser ERROR   uncaughtError: ReferenceError: WeatherConditions is not defined
+[00:22:17.434] Server  WARN    ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+[00:22:17.445] Server  LOG     ✓ Compiled in 70ms
+[00:22:17.725] Server  ERROR   ⨯ ReferenceError: WeatherConditions is not defined
+[00:22:18.663] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:22:19.459] Browser ERROR   uncaughtError: ReferenceError: WeatherConditions is not defined
+[00:22:24.161] Server  WARN    ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+[00:22:24.419] Server  ERROR   ⨯ ReferenceError: WeatherConditions is not defined
+[00:22:24.431] Server  LOG     ✓ Compiled in 59ms
+[00:22:25.217] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:22:25.450] Browser ERROR   uncaughtError: ReferenceError: WeatherConditions is not defined
+[00:22:32.698] Server  WARN    ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+[00:22:33.177] Server  LOG     ✓ Compiled in 93ms
+[00:22:33.963] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:23:45.723] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:24:50.432] Server  LOG     ✓ Compiled in 72ms
+[00:24:54.147] Server  LOG     ✓ Compiled in 63ms
