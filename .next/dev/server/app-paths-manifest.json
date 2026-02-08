@@ -1,4 +1,7 @@
 {
   "/api/celestrak/route": "app/api/celestrak/route.js",
+  "/api/compare/route": "app/api/compare/route.js",
+  "/api/risk/route": "app/api/risk/route.js",
+  "/api/weather/predict/route": "app/api/weather/predict/route.js",
   "/page": "app/page.js"
 }
