@@ -24,3 +24,5 @@ run in model folder to start weather prediction api
 
 
 Enjoy on http://localhost:3000/
+
+Sometimes celestrak doesn't provide all of the data. You will need to restart the dev server until there are 14,500 availiable objects
