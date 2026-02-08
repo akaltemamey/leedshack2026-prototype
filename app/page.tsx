@@ -11,6 +11,7 @@ import HotspotsList from "@/components/hotspots-list"
 import LayerToggles from "@/components/layer-toggles"
 import ComparePanel from "@/components/compare-panel"
 import TrackingStatsCard from "@/components/tracking-stats-card"
+import WeatherConditions, { type WeatherData } from "@/components/weather-conditions"
 import type { LaunchProfile, RiskAssessment, CompareResult } from "@/lib/types"
 import type { SatellitePosition, DensityBandData } from "@/lib/orbital"
 
@@ -42,6 +43,15 @@ export default function DashboardPage() {
   const [profileA, setProfileA] = useState<LaunchProfile | null>(null)
   const [profileB, setProfileB] = useState<LaunchProfile | null>(null)
   const [error, setError] = useState<string | null>(null)
+  const [weatherData, setWeatherData] = useState<WeatherData | null>(null)
+  const [weatherDataA, setWeatherDataA] = useState<WeatherData | null>(null)
+  const [weatherDataB, setWeatherDataB] = useState<WeatherData | null>(null)
+  const [weatherPrediction, setWeatherPrediction] = useState<any>(null)
+  const [weatherPredictionA, setWeatherPredictionA] = useState<any>(null)
+  const [weatherPredictionB, setWeatherPredictionB] = useState<any>(null)
+  const [weatherStatus, setWeatherStatus] = useState<"GO" | "HOLD" | "NO-GO" | null>(null)
+  const [weatherStatusA, setWeatherStatusA] = useState<"GO" | "HOLD" | "NO-GO" | null>(null)
+  const [weatherStatusB, setWeatherStatusB] = useState<"GO" | "HOLD" | "NO-GO" | null>(null)
 
   // Fetch live CelesTrak satellite/debris data on mount
   useEffect(() => {
@@ -60,7 +70,7 @@ export default function DashboardPage() {
     fetchCelestrak()
   }, [])
 
-  // Single scenario assessment
+  // Single scenario assessment with weather integration
   const handleRunAssessmentA = useCallback(async (profile: LaunchProfile) => {
     setIsLoadingA(true)
     setError(null)
@@ -73,7 +83,87 @@ export default function DashboardPage() {
         body: JSON.stringify(profile),
       })
       if (!res.ok) throw new Error("Failed to calculate risk")
-      const data = (await res.json()) as RiskAssessment
+      let data = (await res.json()) as RiskAssessment
+      
+      // Fetch weather prediction if weather data is provided
+      const weatherToUse = compareMode ? weatherDataA : weatherData
+      if (weatherToUse && weatherToUse.site_name && weatherToUse.target_time) {
+        try {
+          const weatherRes = await fetch("/api/weather/predict", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              site_name: weatherToUse.site_name,
+              target_time: weatherToUse.target_time,
+            }),
+          })
+
+          if (weatherRes.ok) {
+            const prediction = await weatherRes.json()
+            
+            if (compareMode) {
+              setWeatherPredictionA(prediction)
+              if (prediction.status && prediction.status.includes("NO-GO")) {
+                setWeatherStatusA("NO-GO")
+                data.riskScore = Math.min(100, data.riskScore * 1.5)
+                data.recommendations = [
+                  {
+                    priority: "CRITICAL",
+                    action: "Hold launch - unfavorable weather conditions",
+                    details: prediction.reason || "Poor weather forecast detected",
+                  },
+                  ...data.recommendations,
+                ]
+              } else if (prediction.probability && prediction.probability > 50) {
+                setWeatherStatusA("HOLD")
+                data.riskScore = Math.min(100, data.riskScore * 1.2)
+                data.recommendations = [
+                  {
+                    priority: "HIGH",
+                    action: "Consider weather delays - elevated risk detected",
+                    details: prediction.reason || "Marginal weather conditions",
+                  },
+                  ...data.recommendations,
+                ]
+              } else {
+                setWeatherStatusA("GO")
+                data.riskScore = Math.max(0, data.riskScore * 0.95)
+              }
+            } else {
+              setWeatherPrediction(prediction)
+              if (prediction.status && prediction.status.includes("NO-GO")) {
+                setWeatherStatus("NO-GO")
+                data.riskScore = Math.min(100, data.riskScore * 1.5)
+                data.recommendations = [
+                  {
+                    priority: "CRITICAL",
+                    action: "Hold launch - unfavorable weather conditions",
+                    details: prediction.reason || "Poor weather forecast detected",
+                  },
+                  ...data.recommendations,
+                ]
+              } else if (prediction.probability && prediction.probability > 50) {
+                setWeatherStatus("HOLD")
+                data.riskScore = Math.min(100, data.riskScore * 1.2)
+                data.recommendations = [
+                  {
+                    priority: "HIGH",
+                    action: "Consider weather delays - elevated risk detected",
+                    details: prediction.reason || "Marginal weather conditions",
+                  },
+                  ...data.recommendations,
+                ]
+              } else {
+                setWeatherStatus("GO")
+                data.riskScore = Math.max(0, data.riskScore * 0.95)
+              }
+            }
+          }
+        } catch (weatherError) {
+          console.warn("Weather prediction optional - continuing without it:", weatherError)
+        }
+      }
+
       setResultA(data)
 
       // If compare mode and both profiles exist, run compare
@@ -85,7 +175,7 @@ export default function DashboardPage() {
     } finally {
       setIsLoadingA(false)
     }
-  }, [compareMode, profileB])
+  }, [compareMode, profileB, weatherData, weatherDataA])
 
   const handleRunAssessmentB = useCallback(async (profile: LaunchProfile) => {
     setIsLoadingB(true)
@@ -99,7 +189,57 @@ export default function DashboardPage() {
         body: JSON.stringify(profile),
       })
       if (!res.ok) throw new Error("Failed to calculate risk")
-      const data = (await res.json()) as RiskAssessment
+      let data = (await res.json()) as RiskAssessment
+      
+      // Fetch weather prediction if weather data B is provided
+      if (weatherDataB && weatherDataB.site_name && weatherDataB.target_time) {
+        try {
+          const weatherRes = await fetch("/api/weather/predict", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              site_name: weatherDataB.site_name,
+              target_time: weatherDataB.target_time,
+            }),
+          })
+
+          if (weatherRes.ok) {
+            const prediction = await weatherRes.json()
+            setWeatherPredictionB(prediction)
+
+            // Adjust risk score and status based on weather prediction
+            if (prediction.status && prediction.status.includes("NO-GO")) {
+              setWeatherStatusB("NO-GO")
+              data.riskScore = Math.min(100, data.riskScore * 1.5)
+              data.recommendations = [
+                {
+                  priority: "CRITICAL",
+                  action: "Hold launch - unfavorable weather conditions",
+                  details: prediction.reason || "Poor weather forecast detected",
+                },
+                ...data.recommendations,
+              ]
+            } else if (prediction.probability && prediction.probability > 50) {
+              setWeatherStatusB("HOLD")
+              data.riskScore = Math.min(100, data.riskScore * 1.2)
+              data.recommendations = [
+                {
+                  priority: "HIGH",
+                  action: "Consider weather delays - elevated risk detected",
+                  details: prediction.reason || "Marginal weather conditions",
+                },
+                ...data.recommendations,
+              ]
+            } else {
+              setWeatherStatusB("GO")
+              data.riskScore = Math.max(0, data.riskScore * 0.95)
+            }
+          }
+        } catch (weatherError) {
+          console.warn("Weather prediction optional - continuing without it:", weatherError)
+        }
+      }
+
       setResultB(data)
 
       // Auto-compare if scenario A exists
@@ -111,7 +251,7 @@ export default function DashboardPage() {
     } finally {
       setIsLoadingB(false)
     }
-  }, [profileA])
+  }, [profileA, weatherDataB])
 
   async function runCompare(a: LaunchProfile, b: LaunchProfile) {
     try {
@@ -239,7 +379,32 @@ export default function DashboardPage() {
                   isLoading={isLoadingA}
                   label="Scenario A"
                 />
-                <div className="flex items-center gap-2 mt-2 mb-1">
+                <WeatherConditions
+                  launchSite={profileA?.launchSite.name || "Cape_Canaveral"}
+                  launchWindow={profileA?.launchWindow || new Date().toISOString().slice(0, 16)}
+                  onWeatherDataChange={setWeatherDataA}
+                />
+                {weatherPredictionA && (
+                  <div className="border border-border/50 bg-card/80 backdrop-blur-sm rounded-lg p-3 space-y-2">
+                    <div className="flex items-center justify-between">
+                      <p className="text-xs font-medium text-muted-foreground">WEATHER A</p>
+                      <span
+                        className={`text-xs font-bold ${
+                          weatherStatusA === "NO-GO"
+                            ? "text-red-400"
+                            : weatherStatusA === "HOLD"
+                              ? "text-yellow-400"
+                              : "text-green-400"
+                        }`}
+                      >
+                        {weatherStatusA}
+                      </span>
+                    </div>
+                    <p className="text-xs text-muted-foreground">{weatherPredictionA.reason}</p>
+                  </div>
+                )}
+                
+                <div className="flex items-center gap-2 mt-4 mb-1">
                   <div className="h-2 w-2 rounded-full bg-amber-400" />
                   <span className="text-xs font-medium text-amber-400 uppercase tracking-wider">
                     Scenario B
@@ -250,7 +415,32 @@ export default function DashboardPage() {
                   isLoading={isLoadingB}
                   label="Scenario B"
                 />
-                <ComparePanel result={compareResult} />
+                <WeatherConditions
+                  launchSite={profileB?.launchSite.name || "Cape_Canaveral"}
+                  launchWindow={profileB?.launchWindow || new Date().toISOString().slice(0, 16)}
+                  onWeatherDataChange={setWeatherDataB}
+                />
+                {weatherPredictionB && (
+                  <div className="border border-border/50 bg-card/80 backdrop-blur-sm rounded-lg p-3 space-y-2">
+                    <div className="flex items-center justify-between">
+                      <p className="text-xs font-medium text-muted-foreground">WEATHER B</p>
+                      <span
+                        className={`text-xs font-bold ${
+                          weatherStatusB === "NO-GO"
+                            ? "text-red-400"
+                            : weatherStatusB === "HOLD"
+                              ? "text-yellow-400"
+                              : "text-green-400"
+                        }`}
+                      >
+                        {weatherStatusB}
+                      </span>
+                    </div>
+                    <p className="text-xs text-muted-foreground">{weatherPredictionB.reason}</p>
+                  </div>
+                )}
+                
+                <ComparePanel result={compareResult} weatherA={weatherPredictionA} weatherB={weatherPredictionB} weatherStatusA={weatherStatusA} weatherStatusB={weatherStatusB} />
                 {/* Side by side charts */}
                 {resultA && resultB && (
                   <>
@@ -266,6 +456,43 @@ export default function DashboardPage() {
               <>
                 <TrackingStatsCard stats={celestrakStats} densityBands={densityBands} />
                 <LaunchProfileForm onSubmit={handleRunAssessmentA} isLoading={isLoadingA} />
+                <WeatherConditions
+                  launchSite={profileA?.launchSite.name || "Cape Canaveral"}
+                  launchWindow={profileA?.launchWindow || new Date().toISOString().slice(0, 16)}
+                  onWeatherDataChange={setWeatherData}
+                />
+                {weatherPrediction && (
+                  <div className="border border-border/50 bg-card/80 backdrop-blur-sm rounded-lg p-4 space-y-3">
+                    <div className="flex items-center justify-between">
+                      <p className="text-xs font-medium text-muted-foreground">WEATHER STATUS</p>
+                      <span
+                        className={`text-sm font-bold ${
+                          weatherStatus === "NO-GO"
+                            ? "text-red-400"
+                            : weatherStatus === "HOLD"
+                              ? "text-yellow-400"
+                              : "text-green-400"
+                        }`}
+                      >
+                        {weatherStatus}
+                      </span>
+                    </div>
+                    <div className="space-y-2 text-xs">
+                      <p>
+                        <strong>Prediction:</strong> {weatherPrediction.prediction_type}
+                      </p>
+                      <p>
+                        <strong>Status:</strong> {weatherPrediction.status}
+                      </p>
+                      <p>
+                        <strong>Reason:</strong> {weatherPrediction.reason}
+                      </p>
+                      <p>
+                        <strong>Wind Speed:</strong> {weatherPrediction.wind_speed} m/s
+                      </p>
+                    </div>
+                  </div>
+                )}
                 <RiskSummaryCard result={activeResult} />
                 <AltitudeRiskChart
                   data={activeResult?.riskByAltitude ?? null}
