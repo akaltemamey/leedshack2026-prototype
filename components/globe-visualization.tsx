@@ -34,6 +34,7 @@ interface GlobeVisualizationProps {
   showHotspots: boolean
   showSatellites: boolean
   satellites: SatellitePosition[]
+  compareCorridorPath?: { lat: number; lon: number }[]
 }
 
 // --- MATH HELPERS ---
@@ -163,7 +164,7 @@ function Rocket({ curve }: { curve: THREE.CatmullRomCurve3 }) {
   )
 }
 
-function Trajectory({ path, visible }: { path: { lat: number; lon: number }[]; visible: boolean }) {
+function Trajectory({ path, visible, color = "#22d3ee" }: { path: { lat: number; lon: number }[]; visible: boolean; color?: string }) {
   const { curve, linePoints } = useMemo(() => {
     if (path.length < 2) return { curve: null, linePoints: [] }
     const points: THREE.Vector3[] = []
@@ -200,7 +201,7 @@ function Trajectory({ path, visible }: { path: { lat: number; lon: number }[]; v
     <group>
       <Line
         points={linePoints}
-        color="#22d3ee"
+        color={color}
         opacity={0.6}
         transparent
         lineWidth={2}
@@ -212,7 +213,7 @@ function Trajectory({ path, visible }: { path: { lat: number; lon: number }[]; v
       <Rocket curve={curve} />
       <mesh position={linePoints[linePoints.length - 1]}>
         <sphereGeometry args={[0.04, 16, 16]} />
-        <meshBasicMaterial color="#22d3ee" transparent opacity={0.5} />
+        <meshBasicMaterial color={color} transparent opacity={0.5} />
       </mesh>
     </group>
   )
@@ -384,6 +385,7 @@ export default function GlobeVisualization({
   showHotspots,
   showSatellites,
   satellites,
+  compareCorridorPath,
 }: GlobeVisualizationProps) {
   const [, setHoveredHotspot] = useState<Hotspot | null>(null)
 
@@ -408,7 +410,16 @@ export default function GlobeVisualization({
           <Trajectory 
             path={corridorPath} 
             visible={showCorridor} 
+            color="#22d3ee"
           />
+
+          {compareCorridorPath && (
+            <Trajectory 
+              path={compareCorridorPath} 
+              visible={showCorridor}
+              color="#f59e0b"
+            />
+          )}
 
           {hotspots.map((h, i) => (
             <HotspotMarker 
