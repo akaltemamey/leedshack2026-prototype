@@ -6,9 +6,13 @@ import type { CompareResult } from "@/lib/types"
 
 interface ComparePanelProps {
   result: CompareResult | null
+  weatherA?: any
+  weatherB?: any
+  weatherStatusA?: "GO" | "HOLD" | "NO-GO" | null
+  weatherStatusB?: "GO" | "HOLD" | "NO-GO" | null
 }
 
-export default function ComparePanel({ result }: ComparePanelProps) {
+export default function ComparePanel({ result, weatherA, weatherB, weatherStatusA, weatherStatusB }: ComparePanelProps) {
   if (!result) {
     return (
       <Card className="border-border/50 bg-card/80 backdrop-blur-sm">
@@ -43,6 +47,16 @@ export default function ComparePanel({ result }: ComparePanelProps) {
         ? "text-amber-400"
         : "text-emerald-400"
 
+  // Build augmented reasons with weather info
+  const augmentedReasons = [...result.reasons]
+  if (weatherA && weatherB && weatherStatusA && weatherStatusB) {
+    if (weatherStatusA !== weatherStatusB) {
+      augmentedReasons.push(
+        `Weather: Scenario A is ${weatherStatusA} vs Scenario B is ${weatherStatusB} — significant divergence in forecast conditions`
+      )
+    }
+  }
+
   return (
     <Card className="border-border/50 bg-card/80 backdrop-blur-sm">
       <CardHeader className="pb-2">
@@ -62,6 +76,15 @@ export default function ComparePanel({ result }: ComparePanelProps) {
             <p className={cn("text-[10px] font-semibold", riskColorA)}>
               {result.scenarioA.riskLabel}
             </p>
+            {weatherStatusA && (
+              <p className={cn("text-[10px] font-semibold mt-1", {
+                "text-red-400": weatherStatusA === "NO-GO",
+                "text-yellow-400": weatherStatusA === "HOLD",
+                "text-green-400": weatherStatusA === "GO"
+              })}>
+                {weatherStatusA} (Weather)
+              </p>
+            )}
           </div>
 
           {/* Delta */}
@@ -94,13 +117,22 @@ export default function ComparePanel({ result }: ComparePanelProps) {
             <p className={cn("text-[10px] font-semibold", riskColorB)}>
               {result.scenarioB.riskLabel}
             </p>
+            {weatherStatusB && (
+              <p className={cn("text-[10px] font-semibold mt-1", {
+                "text-red-400": weatherStatusB === "NO-GO",
+                "text-yellow-400": weatherStatusB === "HOLD",
+                "text-green-400": weatherStatusB === "GO"
+              })}>
+                {weatherStatusB} (Weather)
+              </p>
+            )}
           </div>
         </div>
 
         {/* Reasons */}
         <div className="flex flex-col gap-2">
           <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Key Differences</p>
-          {result.reasons.map((reason, i) => (
+          {augmentedReasons.map((reason, i) => (
             <div key={i} className="flex items-start gap-2 text-xs">
               <span className="mt-0.5 h-1.5 w-1.5 rounded-full bg-primary shrink-0" />
               <span className="text-foreground/80">{reason}</span>
