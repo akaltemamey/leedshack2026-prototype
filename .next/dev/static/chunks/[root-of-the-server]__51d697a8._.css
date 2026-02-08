@@ -1445,6 +1445,10 @@ body {
   border-color: #0000;
 }
 
+.border-border {
+  border-color: hsl(var(--border));
+}
+
 .border-l-transparent {
   border-left-color: #0000;
 }
@@ -1628,6 +1632,10 @@ body {
 
 .bg-transparent {
   background-color: #0000;
+}
+
+.bg-card\/95 {
+  background-color: hsl(var(--card) / .95);
 }
 
 .fill-current {
@@ -1876,6 +1884,10 @@ body {
 
 .uppercase {
   text-transform: uppercase;
+}
+
+.capitalize {
+  text-transform: capitalize;
 }
 
 .tabular-nums {

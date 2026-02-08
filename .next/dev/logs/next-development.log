@@ -1,16 +1,5 @@
-[00:00:01.362] Server  LOG     ✓ Ready in 886ms
-[00:00:13.507] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
-[00:00:28.918] Server  ERROR   Weather API error (404): "{\"detail\":\"Site not found. Options: ['Cape_Canaveral', 'Vandenberg', 'Baikonur', 'Kourou']\"}"
-[00:05:10.702] Server  ERROR   Weather API error (404): "{\"detail\":\"Site not found. Options: ['Cape_Canaveral', 'Vandenberg', 'Baikonur', 'Kourou']\"}"
-[00:05:29.676] Server  ERROR   Weather API error (404): "{\"detail\":\"Site not found. Options: ['Cape_Canaveral', 'Vandenberg', 'Baikonur', 'Kourou']\"}"
-[00:06:15.597] Server  ERROR   Weather API error (404): "{\"detail\":\"Site not found. Options: ['Cape_Canaveral', 'Vandenberg', 'Baikonur', 'Kourou']\"}"
-[00:06:21.468] Server  ERROR   Weather API error (404): "{\"detail\":\"Site not found. Options: ['Cape_Canaveral', 'Vandenberg', 'Baikonur', 'Kourou']\"}"
-[00:09:14.767] Server  LOG     ✓ Compiled in 942ms
-[00:15:19.322] Server  ERROR   Weather API error (404): "{\"detail\":\"Site not found. Options: ['Cape_Canaveral', 'Vandenberg', 'Baikonur', 'Kourou']\"}"
-[00:15:33.471] Server  ERROR   Weather API error (404): "{\"detail\":\"Site not found. Options: ['Cape_Canaveral', 'Vandenberg', 'Baikonur', 'Kourou']\"}"
-[00:17:38.570] Server  LOG     ✓ Compiled in 90ms
-[00:17:40.715] Browser LOG     THREE.WebGLRenderer: Context Lost.
-[00:17:50.702] Server  LOG     ✓ Compiled in 78ms
-[00:17:57.473] Server  LOG     ✓ Compiled in 66ms
-[00:18:08.180] Server  LOG     ✓ Compiled in 82ms
-[00:18:29.152] Server  LOG     ✓ Compiled in 66ms
+[00:00:01.430] Server  LOG     ✓ Ready in 942ms
+[00:00:02.769] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:02:04.992] Server  LOG     ✓ Compiled in 828ms
+[00:02:11.944] Server  LOG     ✓ Compiled in 92ms
+[00:02:28.881] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold

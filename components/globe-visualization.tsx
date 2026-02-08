@@ -39,6 +39,7 @@ interface GlobeVisualizationProps {
 // --- MATH HELPERS ---
 
 const EARTH_RADIUS = 2.0
+const EARTH_RADIUS_KM = 6371
 
 function latLonToVector3(lat: number, lon: number, radius: number): THREE.Vector3 {
   const phi = (90 - lat) * (Math.PI / 180)
@@ -349,12 +350,24 @@ function SatelliteLayer({ satellites, visible }: { satellites: SatellitePosition
         <meshBasicMaterial toneMapped={false} />
       </instancedMesh>
       {hoveredIdx !== null && satellites[hoveredIdx] && (
-         <Html position={latLonToVector3(satellites[hoveredIdx].lat, satellites[hoveredIdx].lon, EARTH_RADIUS + 0.5)} distanceFactor={10} style={{ pointerEvents: 'none' }}>
-           <div className="px-2 py-1 bg-black/80 text-white text-xs rounded border border-gray-600 whitespace-nowrap backdrop-blur-md">
-             <div className="font-bold">{satellites[hoveredIdx].name}</div>
-             <div className="text-[10px] text-gray-300">Alt: {satellites[hoveredIdx].altitudeKm.toFixed(0)}km</div>
-           </div>
-         </Html>
+        (() => {
+          const sat = satellites[hoveredIdx]
+          const altKm = Math.max(0, sat.altitudeKm || 0)
+          const satRadius = EARTH_RADIUS * (1 + altKm / EARTH_RADIUS_KM)
+          const hoverPos = latLonToVector3(sat.lat, sat.lon, satRadius + 0.05)
+          return (
+            <Html position={hoverPos} distanceFactor={6} style={{ pointerEvents: 'none' }}>
+              <div className="rounded-md bg-card/95 px-3 py-2 text-xs font-sans text-card-foreground shadow-lg border border-border whitespace-nowrap backdrop-blur-sm">
+                <div className="font-medium">{sat.name}</div>
+                <div className="text-muted-foreground flex gap-2">
+                  <span>NORAD {sat.noradId}</span>
+                  <span>Alt: {Math.round(sat.altitudeKm)} km</span>
+                </div>
+                <div className="text-muted-foreground capitalize">{sat.type}</div>
+              </div>
+            </Html>
+          )
+        })()
       )}
     </group>
   )
