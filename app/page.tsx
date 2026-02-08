@@ -27,6 +27,7 @@ export default function DashboardPage() {
   const [showCorridor, setShowCorridor] = useState(true)
   const [showHotspots, setShowHotspots] = useState(true)
   const [showSatellites, setShowSatellites] = useState(true)
+  const [satelliteOpacity, setSatelliteOpacity] = useState(0.8)
   const [satellites, setSatellites] = useState<SatellitePosition[]>([])
   const [celestrakStats, setCelestrakStats] = useState<{
     totalTracked: number
@@ -334,6 +335,7 @@ export default function DashboardPage() {
               showSatellites={showSatellites}
               satellites={satellites}
               compareCorridorPath={compareCorridorPath}
+              satelliteOpacity={satelliteOpacity}
             />
           </Suspense>
           <LayerToggles
@@ -341,9 +343,11 @@ export default function DashboardPage() {
             showHotspots={showHotspots}
             showSatellites={showSatellites}
             satelliteCount={satellites.length}
+            satelliteOpacity={satelliteOpacity}
             onToggleCorridor={() => setShowCorridor((p) => !p)}
             onToggleHotspots={() => setShowHotspots((p) => !p)}
             onToggleSatellites={() => setShowSatellites((p) => !p)}
+            onSatelliteOpacityChange={setSatelliteOpacity}
           />
 
           {/* Globe legend overlay */}

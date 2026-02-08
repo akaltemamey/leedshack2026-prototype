@@ -8,7 +8,7 @@ const _geist = Geist({ subsets: ["latin"] })
 const _geistMono = Geist_Mono({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "Orbital Debris Risk Assessment | Launch Corridor Analysis",
+  title: "Orbital Risk | Launch Corridor Analysis",
   description:
     "Configure rocket launch profiles and assess debris exposure risk along the launch corridor. Visualize risk on a 3D globe and compare scenarios.",
   generator: "v0.app",

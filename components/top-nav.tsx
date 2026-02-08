@@ -28,7 +28,7 @@ export default function TopNav({ compareMode, onToggleCompare }: TopNavProps) {
           </svg>
           <div>
             <h1 className="text-sm font-semibold tracking-tight text-foreground">
-              Orbital Debris Risk Assessment
+              Orbital Risk
             </h1>
             <p className="text-[10px] text-muted-foreground tracking-wide uppercase">
               Launch Corridor Analysis System

@@ -35,6 +35,7 @@ interface GlobeVisualizationProps {
   showSatellites: boolean
   satellites: SatellitePosition[]
   compareCorridorPath?: { lat: number; lon: number }[]
+  satelliteOpacity?: number
 }
 
 // --- MATH HELPERS ---
@@ -291,65 +292,207 @@ const SAT_COLORS: Record<string, string> = {
   active: "#3b82f6", debris: "#ef4444", station: "#ffffff", recent: "#22c55e",
 }
 
-function SatelliteLayer({ satellites, visible }: { satellites: SatellitePosition[]; visible: boolean }) {
+function createSatelliteGeometry(): THREE.BufferGeometry {
+  const geometry = new THREE.BufferGeometry()
+  const vertices: number[] = []
+  const colors: number[] = []
+  const indices: number[] = []
+  let indexOffset = 0
+
+  // Helper to add vertices for a box and get color for solar panels
+  const addBoxVertices = (x: number, y: number, z: number, w: number, h: number, d: number, isPanel: boolean) => {
+    const hx = w / 2, hy = h / 2, hz = d / 2
+    const color = isPanel ? [0.98, 0.75, 0.14] : [0.19, 0.17, 0.22] // Gold for panels, dark gray for body
+    
+    const boxVertices = [
+      x - hx, y - hy, z - hz, x + hx, y - hy, z - hz, x + hx, y + hy, z - hz, x - hx, y + hy, z - hz,
+      x - hx, y - hy, z + hz, x + hx, y - hy, z + hz, x + hx, y + hy, z + hz, x - hx, y + hy, z + hz
+    ]
+    
+    boxVertices.forEach(() => {
+      colors.push(...color)
+    })
+    
+    vertices.push(...boxVertices)
+    
+    const baseIdx = indexOffset
+    const boxIndices = [
+      baseIdx, baseIdx + 1, baseIdx + 2, baseIdx, baseIdx + 2, baseIdx + 3,
+      baseIdx + 4, baseIdx + 6, baseIdx + 5, baseIdx + 4, baseIdx + 7, baseIdx + 6,
+      baseIdx, baseIdx + 4, baseIdx + 5, baseIdx, baseIdx + 5, baseIdx + 1,
+      baseIdx + 2, baseIdx + 6, baseIdx + 7, baseIdx + 2, baseIdx + 7, baseIdx + 3
+    ]
+    indices.push(...boxIndices)
+    indexOffset += 8
+  }
+
+  // Central body
+  addBoxVertices(0, 0, 0, 1, 1.4, 1, false)
+  
+  // Left solar panel
+  addBoxVertices(-2.5, 0, 0, 4, 0.3, 2.5, true)
+  
+  // Right solar panel
+  addBoxVertices(2.5, 0, 0, 4, 0.3, 2.5, true)
+
+  geometry.setAttribute('position', new THREE.BufferAttribute(new Float32Array(vertices), 3))
+  geometry.setAttribute('color', new THREE.BufferAttribute(new Float32Array(colors), 3))
+  geometry.setIndex(new THREE.BufferAttribute(new Uint32Array(indices), 1))
+  geometry.computeVertexNormals()
+  
+  return geometry
+}
+
+function createDebrisGeometry(): THREE.BufferGeometry {
+  // Create a jagged rock-like shape using icosahedron with random vertex displacement
+  const baseGeometry = new THREE.IcosahedronGeometry(1, 3)
+  const positions = baseGeometry.attributes.position.array as Float32Array
+  const colors: number[] = []
+
+  // Randomly displace vertices to create jagged appearance
+  for (let i = 0; i < positions.length; i += 3) {
+    const displacement = (Math.random() - 0.5) * 0.4
+    positions[i] += displacement
+    positions[i + 1] += displacement
+    positions[i + 2] += displacement
+    
+    // Rock color: brownish-gray
+    colors.push(0.4, 0.35, 0.3)
+  }
+
+  baseGeometry.setAttribute('color', new THREE.BufferAttribute(new Float32Array(colors), 3))
+  baseGeometry.computeVertexNormals()
+  
+  return baseGeometry
+}
+
+function SatelliteLayer({ satellites, visible, opacity = 1 }: { satellites: SatellitePosition[]; visible: boolean; opacity?: number }) {
   const meshRef = useRef<THREE.InstancedMesh>(null)
+  const debrisRef = useRef<THREE.InstancedMesh>(null)
+  const glowRef = useRef<THREE.InstancedMesh>(null)
   const [hoveredIdx, setHoveredIdx] = useState<number | null>(null)
 
-  const { matrices, colors, count } = useMemo(() => {
+  const { satMatrices, debrisMatrices, colors, satCount, debrisCount } = useMemo(() => {
     if (!satellites || satellites.length === 0) {
-      return { matrices: new Float32Array(0), colors: new Float32Array(0), count: 0 }
+      return { satMatrices: new Float32Array(0), debrisMatrices: new Float32Array(0), colors: new Float32Array(0), satCount: 0, debrisCount: 0 }
     }
-    const cnt = satellites.length
-    const mat = new Float32Array(cnt * 16)
-    const col = new Float32Array(cnt * 3)
+    
+    const satMat: number[] = []
+    const debrisMat: number[] = []
+    const col: number[] = []
     const dummy = new THREE.Matrix4()
     const color = new THREE.Color()
+    let satIdx = 0
+    let debrisIdx = 0
 
-    for (let i = 0; i < cnt; i++) {
+    for (let i = 0; i < satellites.length; i++) {
       const sat = satellites[i]
       const normAlt = Math.max(0.1, Math.min(sat.altitudeKm / 5000, 1.5))
       const radius = EARTH_RADIUS + normAlt
       
       const pos = latLonToVector3(sat.lat, sat.lon, radius)
-      const size = sat.type === "station" ? 0.04 : sat.type === "debris" ? 0.012 : 0.018
+      const size = sat.type === "station" ? 0.012 : sat.type === "debris" ? 0.006 : 0.008
       
       dummy.makeScale(size, size, size)
       dummy.setPosition(pos)
-      dummy.toArray(mat, i * 16)
-
+      
       const c = SAT_COLORS[sat.type] || "#3b82f6"
       color.set(c)
-      col[i * 3] = color.r
-      col[i * 3 + 1] = color.g
-      col[i * 3 + 2] = color.b
+      
+      if (sat.type === "debris") {
+        dummy.toArray(debrisMat, debrisIdx * 16)
+        debrisIdx++
+      } else {
+        dummy.toArray(satMat, satIdx * 16)
+        satIdx++
+      }
+      
+      col.push(color.r, color.g, color.b)
     }
-    return { matrices: mat, colors: col, count: cnt }
+    
+    return { 
+      satMatrices: new Float32Array(satMat),
+      debrisMatrices: new Float32Array(debrisMat),
+      colors: new Float32Array(col),
+      satCount: satIdx,
+      debrisCount: debrisIdx
+    }
   }, [satellites])
 
+  const satGeometryRef = useRef<THREE.BufferGeometry | null>(null)
+  const debrisGeometryRef = useRef<THREE.BufferGeometry | null>(null)
+  
+  if (!satGeometryRef.current) {
+    satGeometryRef.current = createSatelliteGeometry()
+  }
+  
+  if (!debrisGeometryRef.current) {
+    debrisGeometryRef.current = createDebrisGeometry()
+  }
+
   useFrame(() => {
-    if (!meshRef.current || count === 0 || !visible) return
-    for (let i = 0; i < count; i++) {
-      const matrix = new THREE.Matrix4().fromArray(matrices, i * 16)
-      meshRef.current.setMatrixAt(i, matrix)
-      meshRef.current.setColorAt(i, new THREE.Color(colors[i*3], colors[i*3+1], colors[i*3+2]))
+    if (!visible) return
+    
+    // Update satellites
+    if (meshRef.current && satCount > 0) {
+      for (let i = 0; i < satCount; i++) {
+        const matrix = new THREE.Matrix4().fromArray(satMatrices, i * 16)
+        meshRef.current.setMatrixAt(i, matrix)
+      }
+      meshRef.current.instanceMatrix.needsUpdate = true
     }
-    meshRef.current.instanceMatrix.needsUpdate = true
-    if (meshRef.current.instanceColor) meshRef.current.instanceColor.needsUpdate = true
+    
+    // Update debris
+    if (debrisRef.current && debrisCount > 0) {
+      for (let i = 0; i < debrisCount; i++) {
+        const matrix = new THREE.Matrix4().fromArray(debrisMatrices, i * 16)
+        debrisRef.current.setMatrixAt(i, matrix)
+      }
+      debrisRef.current.instanceMatrix.needsUpdate = true
+    }
+    
+    // Update glow effect
+    if (glowRef.current && satCount + debrisCount > 0) {
+      const allCount = satCount + debrisCount
+      for (let i = 0; i < allCount; i++) {
+        const sourceMatrices = i < satCount ? satMatrices : debrisMatrices
+        const sourceIdx = i < satCount ? i : i - satCount
+        const matrix = new THREE.Matrix4().fromArray(sourceMatrices, sourceIdx * 16)
+        // Scale up slightly for glow halo
+        const scale = new THREE.Vector3()
+        matrix.decompose(new THREE.Vector3(), new THREE.Quaternion(), scale)
+        matrix.scale(new THREE.Vector3(1.15, 1.15, 1.15))
+        glowRef.current.setMatrixAt(i, matrix)
+      }
+      glowRef.current.instanceMatrix.needsUpdate = true
+    }
   })
 
   if (!visible) return null
 
   return (
     <group>
-      <instancedMesh
-        ref={meshRef}
-        args={[undefined, undefined, count]}
-        onPointerMove={(e) => { e.stopPropagation(); if (e.instanceId !== undefined) setHoveredIdx(e.instanceId); }}
-        onPointerOut={() => setHoveredIdx(null)}
-      >
-        <sphereGeometry args={[1, 6, 6]} />
-        <meshBasicMaterial toneMapped={false} />
-      </instancedMesh>
+      {/* Satellite mesh */}
+      {satCount > 0 && (
+        <instancedMesh ref={meshRef} args={[satGeometryRef.current || undefined, undefined, satCount]} onPointerMove={(e) => { e.stopPropagation(); if (e.instanceId !== undefined) setHoveredIdx(e.instanceId); }} onPointerOut={() => setHoveredIdx(null)}>
+          <meshStandardMaterial toneMapped={false} metalness={0.7} roughness={0.3} transparent opacity={opacity} vertexColors side={THREE.DoubleSide} />
+        </instancedMesh>
+      )}
+      
+      {/* Debris mesh */}
+      {debrisCount > 0 && (
+        <instancedMesh ref={debrisRef} args={[debrisGeometryRef.current || undefined, undefined, debrisCount]}>
+          <meshStandardMaterial toneMapped={false} metalness={0.5} roughness={0.7} transparent opacity={opacity} vertexColors side={THREE.DoubleSide} />
+        </instancedMesh>
+      )}
+      
+      {/* Glow effect for all objects - same shape as satellite */}
+      {satCount + debrisCount > 0 && (
+        <instancedMesh ref={glowRef} args={[satGeometryRef.current || undefined, undefined, satCount + debrisCount]}>
+          <meshBasicMaterial color={0x00ffff} transparent opacity={opacity * 0.65} />
+        </instancedMesh>
+      )}
+      
       {hoveredIdx !== null && satellites[hoveredIdx] && (
         (() => {
           const sat = satellites[hoveredIdx]
@@ -386,6 +529,7 @@ export default function GlobeVisualization({
   showSatellites,
   satellites,
   compareCorridorPath,
+  satelliteOpacity = 1,
 }: GlobeVisualizationProps) {
   const [, setHoveredHotspot] = useState<Hotspot | null>(null)
 
@@ -401,7 +545,7 @@ export default function GlobeVisualization({
           <Earth />
           <Atmosphere />
 
-          <SatelliteLayer satellites={satellites} visible={showSatellites} />
+          <SatelliteLayer satellites={satellites} visible={showSatellites} opacity={satelliteOpacity} />
 
           {launchSite && (
             <LaunchSiteMarker lat={launchSite.lat} lon={launchSite.lon} name={launchSite.name} />
