@@ -7,9 +7,11 @@ interface LayerTogglesProps {
   showHotspots: boolean
   showSatellites: boolean
   satelliteCount: number
+  satelliteOpacity: number
   onToggleCorridor: () => void
   onToggleHotspots: () => void
   onToggleSatellites: () => void
+  onSatelliteOpacityChange: (opacity: number) => void
 }
 
 export default function LayerToggles({
@@ -17,9 +19,11 @@ export default function LayerToggles({
   showHotspots,
   showSatellites,
   satelliteCount,
+  satelliteOpacity,
   onToggleCorridor,
   onToggleHotspots,
   onToggleSatellites,
+  onSatelliteOpacityChange,
 }: LayerTogglesProps) {
   return (
     <div className="absolute bottom-4 left-4 flex gap-2 z-10">
@@ -56,6 +60,20 @@ export default function LayerToggles({
       >
         Satellites{satelliteCount > 0 ? ` (${satelliteCount.toLocaleString()})` : ""}
       </button>
+      {showSatellites && (
+        <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-card/80 border border-border/50">
+          <label className="text-xs font-medium text-muted-foreground">Opacity:</label>
+          <input
+            type="range"
+            min="0"
+            max="100"
+            value={satelliteOpacity * 100}
+            onChange={(e) => onSatelliteOpacityChange(parseInt(e.target.value) / 100)}
+            className="w-20 h-1.5 rounded-full cursor-pointer accent-blue-500"
+          />
+          <span className="text-xs text-muted-foreground w-7">{Math.round(satelliteOpacity * 100)}%</span>
+        </div>
+      )}
     </div>
   )
 }
