@@ -13,7 +13,7 @@ export async function POST(req: Request) {
       )
     }
 
-    const r = await fetch(`${base}/predict`, {
+    const r = await fetch(`${base}/predict_launch`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(body),
