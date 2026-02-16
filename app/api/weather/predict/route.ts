@@ -1,48 +1,31 @@
-import { NextRequest, NextResponse } from "next/server"
+// app/api/predict/route.ts
+import { NextResponse } from "next/server"
 
-const WEATHER_API_URL = process.env.WEATHER_API_URL || "http://127.0.0.1:8000"
-
-export async function POST(request: NextRequest) {
+export async function POST(req: Request) {
   try {
-    const body = await request.json()
+    const body = await req.json()
 
-    const { site_name, target_time } = body
-
-    if (!site_name || !target_time) {
+    const base = process.env.API_BASE_URL
+    if (!base) {
       return NextResponse.json(
-        { error: "Missing site_name or target_time" },
-        { status: 400 }
+        { error: "Missing API_BASE_URL env var on Vercel" },
+        { status: 500 }
       )
     }
 
-    const response = await fetch(`${WEATHER_API_URL}/predict_launch`, {
+    const r = await fetch(`${base}/predict`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        site_name,
-        target_time,
-      }),
+      body: JSON.stringify(body),
     })
 
-    if (!response.ok) {
-      const errorText = await response.text()
-      console.error(`Weather API error (${response.status}):`, errorText)
-      return NextResponse.json(
-        { error: `Weather API returned ${response.status}`, details: errorText },
-        { status: response.status }
-      )
-    }
-
-    const prediction = await response.json()
-    return NextResponse.json(prediction)
-  } catch (error) {
-    console.error("Weather prediction error:", error)
-    return NextResponse.json(
-      {
-        error: "Failed to fetch weather prediction",
-        message: error instanceof Error ? error.message : "Unknown error",
-      },
-      { status: 500 }
-    )
+    const text = await r.text()
+    // Pass through whatever the backend returns (JSON most likely)
+    return new NextResponse(text, {
+      status: r.status,
+      headers: { "Content-Type": r.headers.get("content-type") ?? "application/json" },
+    })
+  } catch (err) {
+    return NextResponse.json({ error: "Proxy failed", details: String(err) }, { status: 500 })
   }
 }
