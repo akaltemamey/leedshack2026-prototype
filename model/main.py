@@ -4,7 +4,6 @@ from contextlib import asynccontextmanager
 import pandas as pd
 import numpy as np
 from datetime import datetime
-import pytz
 import traceback
 
 # IMPORT FROM NEIGHBORING FILE
