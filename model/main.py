@@ -108,6 +108,7 @@ class PredictionRequest(BaseModel):
     target_time: str = None  # Receive as string to handle formats safely
 
 @app.get("/")
+@app.head("/")
 def home():
     return {"message": "Rocket Weather API Online 🚀", "sites": list(SITES.keys())}
 
