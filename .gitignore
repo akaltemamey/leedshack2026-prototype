@@ -54,3 +54,7 @@ next-env.d.ts
 
 # Stylelint
 .stylelintcache
+
+# Python 
+pycache/
+__pycache__/
