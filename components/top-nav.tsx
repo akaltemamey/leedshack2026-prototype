@@ -9,8 +9,8 @@ interface TopNavProps {
 
 export default function TopNav({ compareMode, onToggleCompare }: TopNavProps) {
   return (
-    <header className="flex items-center justify-between px-6 py-3 border-b border-border/50 bg-card/60 backdrop-blur-md">
-      <div className="flex items-center gap-3">
+    <header className="flex flex-wrap items-start justify-between gap-3 border-b border-border/50 bg-card/60 px-4 py-3 backdrop-blur-md sm:items-center sm:px-6">
+      <div className="flex min-w-0 items-center gap-3">
         <div className="flex items-center gap-2">
           <svg
             viewBox="0 0 24 24"
@@ -26,18 +26,18 @@ export default function TopNav({ compareMode, onToggleCompare }: TopNavProps) {
             <path d="M12 19v3" strokeLinecap="round" />
             <path d="M10 21l2 1 2-1" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
-          <div>
+          <div className="min-w-0">
             <h1 className="text-sm font-semibold tracking-tight text-foreground">
               Orbital Risk
             </h1>
-            <p className="text-[10px] text-muted-foreground tracking-wide uppercase">
+            <p className="hidden text-[10px] uppercase tracking-wide text-muted-foreground sm:block">
               Launch Corridor Analysis System
             </p>
           </div>
         </div>
       </div>
 
-      <div className="flex items-center gap-2">
+      <div className="flex w-full flex-wrap items-center justify-between gap-2 sm:w-auto sm:justify-end">
         <Button
           variant={compareMode ? "default" : "outline"}
           size="sm"
@@ -46,7 +46,7 @@ export default function TopNav({ compareMode, onToggleCompare }: TopNavProps) {
         >
           {compareMode ? "Exit Compare" : "Compare Scenarios"}
         </Button>
-        <div className="flex items-center gap-1.5 text-xs text-muted-foreground ml-3">
+        <div className="ml-1 flex items-center gap-1.5 text-xs text-muted-foreground sm:ml-3">
           <div className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
           <span>System Online</span>
         </div>

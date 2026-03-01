@@ -534,8 +534,8 @@ export default function GlobeVisualization({
   const [, setHoveredHotspot] = useState<Hotspot | null>(null)
 
   return (
-    <div className="w-full h-full relative" style={{ minHeight: '500px' }}>
-      <Canvas camera={{ position: [0, 0, 6], fov: 45 }} gl={{ antialias: true, alpha: true }}>
+    <div className="relative h-full w-full min-h-[240px] sm:min-h-[300px] lg:min-h-0">
+      <Canvas camera={{ position: [0, 0, 5.2], fov: 42 }} gl={{ antialias: true, alpha: true }}>
         <color attach="background" args={["#000005"]} />
         <Suspense fallback={null}>
           <ambientLight intensity={0.4} />
@@ -576,8 +576,8 @@ export default function GlobeVisualization({
 
           <OrbitControls 
             enablePan={false} 
-            minDistance={3.5} 
-            maxDistance={12} 
+            minDistance={3.0} 
+            maxDistance={10} 
             enableDamping 
             dampingFactor={0.05} 
           />

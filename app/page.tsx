@@ -293,12 +293,12 @@ export default function DashboardPage() {
   const compareCorridorPath = resultB?.corridorPath
 
   return (
-    <div className="flex flex-col h-screen overflow-hidden">
+    <div className="flex min-h-screen flex-col overflow-x-hidden lg:h-screen lg:overflow-hidden">
       <TopNav compareMode={compareMode} onToggleCompare={toggleCompareMode} />
 
       {/* Error banner */}
       {error && (
-        <div className="px-6 py-2 bg-destructive/10 border-b border-destructive/20">
+        <div className="border-b border-destructive/20 bg-destructive/10 px-4 py-2 sm:px-6">
           <p className="text-xs text-destructive flex items-center gap-2">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="h-3.5 w-3.5">
               <circle cx="12" cy="12" r="10" />
@@ -309,9 +309,9 @@ export default function DashboardPage() {
         </div>
       )}
 
-      <div className="flex flex-1 overflow-hidden">
+      <div className="flex flex-1 flex-col overflow-hidden lg:flex-row">
         {/* Left: 3D Globe */}
-        <div className="relative flex-1 globe-container">
+        <div className="globe-container relative mx-auto aspect-square w-full max-h-[72vh] min-h-[280px] flex-1 sm:max-h-[78vh] sm:min-h-[340px] lg:mx-0 lg:aspect-auto lg:h-auto lg:max-h-none lg:min-h-0">
           <Suspense
             fallback={
               <div className="flex items-center justify-center h-full text-muted-foreground text-sm">
@@ -364,7 +364,7 @@ export default function DashboardPage() {
         </div>
 
         {/* Right: Sidebar */}
-        <aside className="w-[380px] flex flex-col overflow-y-auto border-l border-border/50 bg-background/50 backdrop-blur-sm">
+        <aside className="w-full flex flex-col overflow-y-auto border-t border-border/50 bg-background/50 backdrop-blur-sm lg:w-[380px] lg:border-l lg:border-t-0">
           <div className="flex flex-col gap-3 p-4">
             {/* Compare mode: two forms side by side */}
             {compareMode ? (
